@@ -101,12 +101,11 @@ function setup() {
 
 function settings() {
   echo "Script settings"
-  echo ""
-  echo -ne "${BLUE}Please write ROM name: ${NC}" 
+  echo -ne "\n${BLUE}Please write ROM name: ${NC}"
   read rom_name
-  echo -ne "${BLUE}Please write path to ROM dir: ${NC}" 
+  echo -ne "${BLUE}Please write path to ROM dir: ${NC}"
   read rom_dir
-  echo -ne "${BLUE}Please write commant to init sources: ${NC}"
+  echo -ne "${BLUE}Please write command to init sources: ${NC}"
   read repo_init
 
   echo -e "${CYAN}Ok, done, please review your settings:${NC}"
@@ -114,7 +113,7 @@ function settings() {
   echo -e "${BLUE}Rom path - ${NC}$rom_dir"
   echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
 
-  echo -ne "${BLUE}Save changes? [y/N]: ${NC}" 
+  echo -ne "${BLUE}Save changes? [y/N]: ${NC}"
   read save
   if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
     echo "Saving settings..."
