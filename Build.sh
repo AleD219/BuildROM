@@ -107,11 +107,23 @@ function settings() {
   read rom_dir
   echo -ne "${BLUE}Please write command to init sources: ${NC}"
   read repo_init
+  echo -ne "${BLUE}Do y want to use ccache? [Y/n]: ${NC}"
+  read use_ccache
 
+  if [ "$use_ccache" = "y" ] || [ "$use_ccache" = "Y" ]; then
+    use_ccache="1"
+    use_ccacheP="Yes"
+  else
+    use_ccache="0"
+    use_ccacheP="No"
+  fi
+   
   echo -e "${CYAN}Ok, done, please review your settings:${NC}"
   echo -e "${BLUE}Rom name - ${NC}$rom_name"
   echo -e "${BLUE}Rom path - ${NC}$rom_dir"
   echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
+  echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
+
 
   echo -ne "${BLUE}Save changes? [y/N]: ${NC}"
   read save
@@ -120,8 +132,9 @@ function settings() {
     echo "rom_name=$rom_name" > ~/$script_dir/config.txt
     echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
     echo "repo_init=$repo_init" >> ~/$script_dir/config.txt
-    echo "Settings saved, going to main menu"
-    start
+    echo "use_ccache=$use_ccache" >> ~/$script_dir/config.txt
+    echo "Settings saved, please reopen script"
+    exit
   else
     echo "Settings don't changed!"
     start
@@ -155,6 +168,13 @@ function clean() {
   cd ~/$rom_dir
   . build/envsetup.sh && make clean
   cd ~/$script_dir
+  if [ "$use_ccache" = "1" ]; then
+  echp "Cleaning ccache.."
+  export CCACHE_DIR=/home/ccache/$username
+  ccache -C
+  wait
+  echo "CCACHE Cleared"
+  fi
 }
 
 function build_rom() {
@@ -165,6 +185,13 @@ function build_rom() {
 
 function build() {
   cd ~/$rom_dir
+  if [ "$use_ccache" = "1" ]; then
+  echo "Setupping ccache..."
+  export USE_CCACHE=1
+  export CCACHE_DIR=/home/ccache/$username
+  prebuilts/misc/linux-x86/ccache/ccache -M 35G
+  fi
+
   mkdir -p '_logs'
   BUILD_START=$(date +"%s")
   DATE=`date`
