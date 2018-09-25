@@ -159,17 +159,18 @@ function clean() {
 
 function build() {
   cd ~/$rom_dir
+  mkdir -p '_logs'
   BUILD_START=$(date +"%s")
   DATE=`date`
   echo -e "\n${CYAN}#######################################################################${NC}"
   echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
   . build/envsetup.sh 
-  rm 1.log
+  LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
   brunch mido | tee 1.log
-  echo -e "${BLUE}Log writed in 1.log $DATE${NC}\n"
+  echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
   echo "uploading to pastebin.."
   echo -n "Done, pastebin link: "
-  cat 1.log | pastebinit -b https://paste.ubuntu.com
+  cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
   local result=$?
   echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
   while kill -0 $pid &>/dev/null
