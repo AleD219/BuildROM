@@ -165,6 +165,7 @@ function build() {
   echo -e "\n${CYAN}#######################################################################${NC}"
   echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
   . build/envsetup.sh 
+  rm 1.log
   brunch mido | tee 1.log
   echo -e "${BLUE}Log writed in 1.log $DATE${NC}\n"
   echo "uploading to pastebin.."
