@@ -87,9 +87,11 @@ function setup() {
   echo "\nSetuping local build enviroment..."
   echo "Step 1 - Installing git"
   sudo apt install git -y
-  echo "Step 2 - Downloading setup script"
+  echo "Step 2 - Installing some usefull utilities needed by script"
+  sudo apt install pastebinit -y
+  echo "Step 3 - Downloading setup script"
   git clone https://github.com/akhilnarang/scripts ~/scripts
-  echo "Step 3 - Execute setup script"
+  echo "Step 4 - Execute setup script"
   cd ~/scripts
   sudo bash setup/android_build_env.sh
   sudo bash setup/install_android_sdk.bash
@@ -162,7 +164,12 @@ function build() {
   DATE=`date`
   echo -e "\n${CYAN}#######################################################################${NC}"
   echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
-  . build/envsetup.sh && brunch mido
+  . build/envsetup.sh 
+  brunch mido | tee 1.log
+  echo -e "${BLUE}Log writed in 1.log $DATE${NC}\n"
+  echo "uploading to pastebin.."
+  echo -n "Done, pastebin link: "
+  cat 1.log | pastebinit -b https://paste.ubuntu.com
   local result=$?
   echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
   while kill -0 $pid &>/dev/null
