@@ -112,8 +112,8 @@ function settings() {
   echo -e "${BLUE}Rom path - ${NC}$rom_dir"
   echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
 
-  echo -ne "${BLUE}Save changes? [y/N]:${NC} " 
-  read $save
+  echo -ne "${BLUE}Save changes? [y/N]: " 
+  echo "$save"
   if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
     echo "Saving settings...${NC}"
     echo "rom_name=$rom_name" > ~/$script_dir/config.txt
