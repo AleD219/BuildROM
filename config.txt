@@ -1,5 +1,0 @@
-rom_dir=syberia
-repo_init="repo init -u https://github.com/syberia-project/manifest -b 9.0"
-rom_name=t
-rom_dir=t
-repo_init=t

@@ -1,0 +1,225 @@
+#!/bin/bash
+#Auto building ROM, by MrYacha and Timur
+
+# Viriebles section
+script_dir="BuildROM"
+script_file="Build.sh"
+script_ver="R0.5"
+#
+
+# Add colors variables
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+PURPLE='\033[1;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+#
+
+# Init section
+if [ $0 = /bin/bash ];then
+  echo -e "Please run using \"bash Build.sh\""
+  exit
+fi
+
+if [ ! -e ~/$script_dir/$script_file ];then
+  echo -e "${RED}Wrong script location, please move to ~/$script_dir/$script_file ${NC}"
+  exit
+fi
+
+if [ ! -e ~/$script_dir/config.txt ];then
+  echo -e "${BLUE}No configuration file, creating...${NC}"
+  touch ~/$script_dir/config.txt
+  echo "rom_dir=syberia" >> ~/$script_dir/config.txt
+  echo "rom_name=syberia" >> ~/$script_dir/config.txt
+  echo "repo_init=\"repo init -u https://github.com/syberia-project/manifest -b 9.0\"" >> ~/$script_dir/config.txt
+fi
+
+#Import variables from config file
+. ~/$script_dir/config.txt
+#
+
+# Functions section
+function start() {
+  echo -e "\n${BLUE}BuildROM script $script_ver | By MrYacha & Timur"
+
+  echo -e "\n${GREEN}[1]Build ROM"
+  echo -e "[2]Source cleanup"
+  echo -e "[3]Sync repo"
+  echo -e "[4]Misc"
+  echo -e "[5]Settings"
+  echo -e "[6]Quit${NC}"
+  echo -ne "\n${BLUE}(i)Please enter a choice[1-6]:${NC} "
+
+  read choice
+}
+
+function misc() {
+while :; do
+  echo -e "\n${GREEN}[1]Setup local build enviroment"
+  echo -e "[2]Repo init"
+  echo -e "[3]Get help"
+  echo -e "[4]Back to main menu${NC}"
+  echo -ne "\n${BLUE}(i)Please enter a choice[1-4]:${NC} "
+
+  read choice2
+
+  case $choice2 in
+    1 ) setup;;
+    2 ) init;;
+    3 ) help;;
+    4 ) break
+  esac
+done
+}
+
+function help() {
+  echo -e "\n${RED}ROM building script ${BLUE}R0.4-Beta${NC}"
+  echo -e "${BLUE}Help:${NC}"
+  echo "Run script with \"--setup\" parameter for setup local build enviroment"
+  echo "\"--init\" will be init repo of ROM source"
+  echo "\"--sync\" will be download ROM sources"
+  echo "\"-c\" will be clean up out dir"
+  echo "\"-b\" will build your ROM"
+}
+
+function setup() {
+  echo "\nSetuping local build enviroment..."
+  echo "Step 1 - Installing git"
+  sudo apt install git -y
+  echo "Step 2 - Downloading setup script"
+  git clone https://github.com/akhilnarang/scripts ~/scripts
+  echo "Step 3 - Execute setup script"
+  cd ~/scripts
+  sudo bash setup/android_build_env.sh
+  sudo bash setup/install_android_sdk.bash
+  cd ~/$script_dir
+  rm -rf ~/scripts
+}
+
+function settings() {
+  echo "Script settings"
+  echo ""
+  echo -ne "${BLUE}Please write ROM name: ${NC}" 
+  read rom_name
+  echo -ne "${BLUE}Please write path to ROM dir: ${NC}" 
+  read rom_dir
+  echo -ne "${BLUE}Please write commant to init sources: ${NC}"
+  read repo_init
+
+  echo -e "${CYAN}Ok, done, please review your settings:${NC}"
+  echo -e "${BLUE}Rom name - ${NC}$rom_name"
+  echo -e "${BLUE}Rom path - ${NC}$rom_dir"
+  echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
+
+  echo -ne "${BLUE}Save changes? [y/N]:${NC} " 
+  read $save
+  if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
+    echo "Saving settings...${NC}"
+    echo "rom_name=$rom_name" > ~/$script_dir/config.txt
+    echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
+    echo "repo_init=$repo_init" >> ~/$script_dir/config.txt
+    echo "Settings saved, going to main menu"
+    start
+  else
+    echo "Settings don't changed!"
+    start
+  fi
+
+  exit
+}
+
+function init() {
+  echo -e "\n${BLUE}(i)Initializing Repo...${NC}"
+  mkdir ~/$rom_dir
+  cd ~/$rom_dir
+  $repo_init #Use command from variable
+  cd ~/$script_dir
+}
+
+function sync() {
+  cd ~/$rom_dir
+  echo -e "\n${BLUE}(i)Syncing $rom_name repo...${NC}"
+  if [ "$FORCE_SYNC" = 1 ]; then
+    echo "Force sync!"
+    repo sync -f -c --no-clone-bundle --no-tags --force-sync
+  else
+    echo "Normal sync"
+    repo sync -f -c --no-clone-bundle --no-tags
+  fi
+  cd ~/$script_dir
+}
+
+function clean() {
+  cd ~/$rom_dir
+  . build/envsetup.sh && make clean
+  cd ~/$script_dir
+}
+
+function build() {
+  cd ~/$rom_dir
+  BUILD_START=$(date +"%s")
+  DATE=`date`
+  echo -e "\n${CYAN}#######################################################################${NC}"
+  echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
+  . build/envsetup.sh && brunch mido
+  local result=$?
+  echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
+  while kill -0 $pid &>/dev/null
+  do
+    for i in "${spin[@]}"
+    do
+      echo -ne "\b$i"
+      sleep 0.1
+    done
+  done
+  BUILD_END=$(date +"%s")
+  DIFF=$(($BUILD_END - $BUILD_START))
+  if [ -z $result ];
+  then
+    echo -e "\n${GREEN}(i)ROM compilation completed successfully"
+    echo -e "#######################################################################"
+    echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+    echo -e "#######################################################################${NC}"
+  else
+    echo -e "\n${RED}(!)ROM compilation failed"
+    echo -e "#######################################################################"
+    echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+    echo -e "#######################################################################${NC}"
+  fi
+  cd ~/$script_dir
+}
+#
+
+if [ -n "$1" ];then
+  while [ -n "$1" ]
+  do
+    case "$1" in
+      --help | -h) help ;;
+      --setup) setup ;;
+      --init) init ;;
+      --sync)
+      if [[ "$2" = "-force" || "$2" = "-f" ]];then
+        FORCE_SYNC=1
+      fi
+      sync
+      shift;;
+      --clean | -c) clean ;;
+      --build | -b) build ;;
+    esac
+    shift
+  done
+  exit 0
+fi
+
+while :; do
+  start
+  case $choice in
+    1 ) build;;
+    2 ) clean;;
+    3 ) sync;;
+    4 ) misc;;
+    5 ) settings;;
+    6 ) exit 0;;
+  esac
+done
