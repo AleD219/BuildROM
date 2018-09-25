@@ -100,44 +100,62 @@ function setup() {
 }
 
 function settings() {
-  echo "Script settings"
-  echo -ne "\n${BLUE}Please write ROM name: ${NC}"
-  read rom_name
-  echo -ne "${BLUE}Please write path to ROM dir: ${NC}"
-  read rom_dir
-  echo -ne "${BLUE}Please write command to init sources: ${NC}"
-  read repo_init
-  echo -ne "${BLUE}Do y want to use ccache? [Y/n]: ${NC}"
-  read use_ccache
 
-  if [ "$use_ccache" = "y" ] || [ "$use_ccache" = "Y" ]; then
-    use_ccache="1"
-    use_ccacheP="Yes"
+  echo -e "${BLUE}Current script settings: ${NC}"
+
+  echo -e "${CYAN}Rom name - ${NC}$rom_name"
+  echo -e "${CYAN}Rom path - ${NC}$rom_dir"
+  echo -e "${CYAN}Init ROM sources command - ${NC}$repo_init"
+  echo -e "${CYAN}Use ccache - ${NC}$use_ccacheP"
+
+  echo -ne "${BLUE}Do y wanna change? [Y/n]: ${NC}"
+  read change_setings
+
+  if [ "$change_setings" = "y" ] || [ "$change_setings" = "Y" ]; then
+
+    echo "Script settings"
+    echo -ne "\n${BLUE}Please write ROM name: ${NC}"
+    read rom_name
+    echo -ne "${BLUE}Please write path to ROM dir: ${NC}"
+    read rom_dir
+    echo -ne "${BLUE}Please write command to init sources: ${NC}"
+    read repo_init
+    echo -ne "${BLUE}Do y want to use ccache? [Y/n]: ${NC}"
+    read use_ccache
+
+    if [ "$use_ccache" = "y" ] || [ "$use_ccache" = "Y" ]; then
+      use_ccache="1"
+      use_ccacheP="Yes"
+    else
+      use_ccache="0"
+      use_ccacheP="No"
+    fi
+    
+    echo -e "${CYAN}Ok, done, please review your settings:${NC}"
+    echo -e "${BLUE}Rom name - ${NC}$rom_name"
+    echo -e "${BLUE}Rom path - ${NC}$rom_dir"
+    echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
+    echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
+
+
+    echo -ne "${BLUE}Save changes? [y/N]: ${NC}"
+    read save
+    if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
+      echo "Saving settings..."
+      echo "rom_name=$rom_name" > ~/$script_dir/config.txt
+      echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
+      echo "repo_init=\"$repo_init\"" >> ~/$script_dir/config.txt
+      echo "use_ccache=$use_ccache" >> ~/$script_dir/config.txt
+      echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/config.txt
+      echo "Settings saved, please reopen script"
+      exit
+    else
+      echo "Settings don't changed!"
+      start
+    fi
   else
-    use_ccache="0"
-    use_ccacheP="No"
-  fi
-   
-  echo -e "${CYAN}Ok, done, please review your settings:${NC}"
-  echo -e "${BLUE}Rom name - ${NC}$rom_name"
-  echo -e "${BLUE}Rom path - ${NC}$rom_dir"
-  echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
-  echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
-
-
-  echo -ne "${BLUE}Save changes? [y/N]: ${NC}"
-  read save
-  if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
-    echo "Saving settings..."
-    echo "rom_name=$rom_name" > ~/$script_dir/config.txt
-    echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
-    echo "repo_init=$repo_init" >> ~/$script_dir/config.txt
-    echo "use_ccache=$use_ccache" >> ~/$script_dir/config.txt
-    echo "Settings saved, please reopen script"
-    exit
-  else
-    echo "Settings don't changed!"
-    start
+  echo "going to main screen"
+  start
   fi
 
   exit
