@@ -157,6 +157,12 @@ function clean() {
   cd ~/$script_dir
 }
 
+function build_rom() {
+  brunch mido
+  result="$?"
+  return $result
+}
+
 function build() {
   cd ~/$rom_dir
   mkdir -p '_logs'
@@ -164,14 +170,13 @@ function build() {
   DATE=`date`
   echo -e "\n${CYAN}#######################################################################${NC}"
   echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
-  . build/envsetup.sh 
+  . build/envsetup.sh
   LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
-  brunch mido | tee 1.log
+  build_rom && result="$?" | tee "$LOG_FILE"
   echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
   echo "uploading to pastebin.."
   echo -n "Done, pastebin link: "
   cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
-  local result=$?
   echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
   while kill -0 $pid &>/dev/null
   do
@@ -183,7 +188,7 @@ function build() {
   done
   BUILD_END=$(date +"%s")
   DIFF=$(($BUILD_END - $BUILD_START))
-  if [ -z $result ];
+  if [ "$result" = "0" ];
   then
     echo -e "\n${GREEN}(i)ROM compilation completed successfully"
     echo -e "#######################################################################"
