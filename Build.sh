@@ -359,7 +359,7 @@ if [ -n "$1" ];then
       sync
       shift;;
       --clean | -c) clean ;;
-      --build | -b) build ;;
+      --build | -b) build_full ;;
     esac
     shift
   done
