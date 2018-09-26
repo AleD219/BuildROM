@@ -31,10 +31,14 @@ fi
 
 function settings() {
   echo "Script settings"
+  echo -ne "\n${BLUE}Please your device codename: ${NC}"
+  read device
   echo -ne "\n${BLUE}Please write ROM name: ${NC}"
   read rom_name
   echo -ne "${BLUE}Please write path to ROM dir: ${NC}"
   read rom_dir
+  echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
+  read buildtype
   echo -ne "${BLUE}Please write command to init sources: ${NC}"
   read repo_init
   echo -ne "${BLUE}Do y want to use ccache? [Y/n]: ${NC}"
@@ -49,8 +53,10 @@ function settings() {
   fi
   
   echo -e "${CYAN}Ok, done, please review your settings:${NC}"
+  echo -e "${BLUE}Device Codename - ${NC}$device"
   echo -e "${BLUE}Rom name - ${NC}$rom_name"
   echo -e "${BLUE}Rom path - ${NC}$rom_dir"
+  echo -e "${BLUE}Build Type - ${NC}$buildtype"
   echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
   echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
 
@@ -59,8 +65,10 @@ function settings() {
   read save
   if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
     echo "Saving settings..."
+    echo "device=$device" > ~/$script_dir/config.txt
     echo "rom_name=$rom_name" > ~/$script_dir/config.txt
     echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
+    echo "buildtype=$buildtype" >> ~/$script_dir/config.txt
     echo "repo_init=\"$repo_init\"" >> ~/$script_dir/config.txt
     echo "use_ccache=$use_ccache" >> ~/$script_dir/config.txt
     echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/config.txt
@@ -146,8 +154,10 @@ function settings_info() {
 
   echo -e "${BLUE}Current script settings: ${NC}"
 
+  echo -e "${CYAN}Device Name - ${NC}$device"
   echo -e "${CYAN}Rom name - ${NC}$rom_name"
   echo -e "${CYAN}Rom path - ${NC}$rom_dir"
+  echo -e "${CYAN}Build type - ${NC}$buildtype"
   echo -e "${CYAN}Init ROM sources command - ${NC}$repo_init"
   echo -e "${CYAN}Use ccache - ${NC}$use_ccacheP"
 
@@ -205,7 +215,8 @@ function installclean() {
 }
 
 function build_rom() {
-  brunch mido
+  lunch "$rom_name"_$device-$buildtype
+  brunch $device
   result="$?"
   return $result
 }
