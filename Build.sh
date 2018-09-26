@@ -1,5 +1,5 @@
 #!/bin/bash
-#Auto building ROM, by MrYacha and Timur
+#Auto building ROM, by MrYacha, Timur and AleD219
 
 # Viriebles section
 script_dir="BuildROM"
@@ -31,19 +31,19 @@ fi
 
 function settings() {
   echo "Script settings"
-  echo -ne "\n${BLUE}Please your device codename: ${NC}"
+  echo -ne "${BLUE}Please your device codename: ${NC}"
   read device
-  echo -ne "\n${BLUE}Please write ROM name: ${NC}"
+  echo -ne "${BLUE}Please write ROM name: ${NC}"
   read rom_name
   echo -ne "${BLUE}Please write path to ROM dir: ${NC}"
   read rom_dir
   echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
   read buildtype
-  echo -ne "${BLUE}Are you building official or unofficial?${NC}"
+  echo -ne "${BLUE}Are you building official or unofficial? ${NC}"
   read official
   echo -ne "${BLUE}Please write command to init sources: ${NC}"
   read repo_init
-  echo -ne "${BLUE}Do y want to use ccache? [Y/n]: ${NC}"
+  echo -ne "${BLUE}Do you want to use ccache? [Y/n]: ${NC}"
   read use_ccache
 
   if [ "$use_ccache" = "y" ] || [ "$use_ccache" = "Y" ]; then
@@ -68,8 +68,8 @@ function settings() {
   read save
   if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
     echo "Saving settings..."
-    echo "device=$device" > ~/$script_dir/config.txt
-    echo "rom_name=$rom_name" > ~/$script_dir/config.txt
+    echo "device=$device" >> ~/$script_dir/config.txt
+    echo "rom_name=$rom_name" >> ~/$script_dir/config.txt
     echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
     echo "buildtype=$buildtype" >> ~/$script_dir/config.txt
     echo "official=$official" >> ~/$script_dir/config.txt
@@ -98,7 +98,7 @@ function start() {
   echo -e "\n${BLUE}BuildROM script $script_ver | By MrYacha & Timur"
 
   echo -e "\n${GREEN}[1]Build ROM"
-  echo -e "\n${GREEN}[2]Build ROM (full)"
+  echo -e "${GREEN}[2]Build ROM (full)"
   echo -e "[3]Source cleanup (clean)"
   echo -e "[4]Source cleanup (installclean)"
   echo -e "[5]Sync repo"
@@ -168,7 +168,7 @@ function settings_info() {
   echo -e "${CYAN}Init ROM sources command - ${NC}$repo_init"
   echo -e "${CYAN}Use ccache - ${NC}$use_ccacheP"
 
-  echo -ne "${BLUE}Do y wanna change? [Y/n]: ${NC}"
+  echo -ne "${BLUE}Do you want to change? [Y/n]: ${NC}"
   read change_setings
 
   if [ "$change_setings" = "y" ] || [ "$change_setings" = "Y" ]; then
@@ -223,7 +223,7 @@ function installclean() {
 }
 
 function build_rom() {
-  lunch "$rom_name"_$device-$buildtype
+  . build/envsetup.sh && lunch "$rom_name"_"$device"-$buildtype
   brunch $device
   result="$?"
   return $result
@@ -235,7 +235,7 @@ function build() {
   echo "Setupping ccache..."
   export USE_CCACHE=1
   export CCACHE_DIR=/home/ccache/$username
-  prebuilts/misc/linux-x86/ccache/ccache -M 35G
+  ccache -M 35G
   fi
 
   mkdir -p '_logs'
@@ -281,8 +281,7 @@ function build_full() {
   if [ "$use_ccache" = "1" ]; then
   echo "Setupping ccache..."
   export USE_CCACHE=1
-  export CCACHE_DIR=/home/ccache/$username
-  prebuilts/misc/linux-x86/ccache/ccache -M 35G
+  ccache -M 35G
   fi
 
   mkdir -p '_logs'
@@ -294,14 +293,16 @@ function build_full() {
   . build/envsetup.sh
   LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
   export "${rom_name^^}"_BUILD_TYPE="${official^^}"
-  installclean && sync && build_rom && result="$?" | tee "$LOG_FILE"
+  installclean && sync
+  cd ~/$rom_dir
+  build_rom && result="$?" | tee "$LOG_FILE"
   echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
   echo "uploading to pastebin.."
   echo -n "Done, pastebin link: "
   cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
   echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
   echo -e ${cya}"Uploading to mega.nz"
-  mega-login "$megauser" "$megapass"
+  mega-login "$megaemail" "$megapass"
   mega-put out/target/product/"$device"/"$rom_name"_"$device"*.zip /"$device"_builds/"$rom_name"/
   mega-logout
   wait
@@ -336,9 +337,10 @@ function megasetup() {
   read megaemail
   echo -ne "\n${BLUE}Please write your mega password: ${NC}"
   read megapass
-  echo "megaemail=$megaemail" > ~/$script_dir/config.txt
-  echo "megapass=$megapass" > ~/$script_dir/config.txt
-  echo -ne "\n${BLUE}now the full build will upload the file on mega.nz!${NC}"
+  echo "megaemail=$megaemail" >> ~/$script_dir/config.txt
+  echo "megapass=$megapass" >> ~/$script_dir/config.txt
+  echo -ne "\n${BLUE}now the full build will upload the file on mega.nz! Restart the script.${NC}"
+  exit
 }
 #
 

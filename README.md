@@ -10,11 +10,11 @@ Complex system for ROM maintainers
 * And more others features for maintainers
 
 ##Using:
-For start using BuildROM tou need download it to ~/BuildROM/Build.sh
+For start using BuildROM you need download it to ~/BuildROM/Build.sh
 
 
     mkdir -p ~/BuildROM 
     cd ~/BuildROM
-    wget https://gitlab.com/MrYacha/buildrom/blob/master/Build.sh Build.sh
+    wget https://github.com/AleD219/BuildRom/blob/master/Build.sh Build.sh
     bash Build.sh
 
