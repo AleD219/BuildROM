@@ -94,13 +94,14 @@ function start() {
   echo -e "\n${BLUE}BuildROM script $script_ver | By MrYacha & Timur"
 
   echo -e "\n${GREEN}[1]Build ROM"
-  echo -e "[2]Source cleanup (clean)"
-  echo -e "[3]Source cleanup (installclean)"
-  echo -e "[4]Sync repo"
-  echo -e "[5]Misc"
-  echo -e "[6]Settings"
-  echo -e "[7]Quit${NC}"
-  echo -ne "\n${BLUE}(i)Please enter a choice[1-7]:${NC} "
+  echo -e "\n${GREEN}[2]Build ROM (full)"
+  echo -e "[3]Source cleanup (clean)"
+  echo -e "[4]Source cleanup (installclean)"
+  echo -e "[5]Sync repo"
+  echo -e "[6]Misc"
+  echo -e "[7]Settings"
+  echo -e "[8]Quit${NC}"
+  echo -ne "\n${BLUE}(i)Please enter a choice[1-8]:${NC} "
 
   read choice
 }
@@ -268,6 +269,53 @@ function build() {
   fi
   cd ~/$script_dir
 }
+
+function build_full() {
+  cd ~/$rom_dir
+  if [ "$use_ccache" = "1" ]; then
+  echo "Setupping ccache..."
+  export USE_CCACHE=1
+  export CCACHE_DIR=/home/ccache/$username
+  prebuilts/misc/linux-x86/ccache/ccache -M 35G
+  fi
+
+  mkdir -p '_logs'
+  BUILD_START=$(date +"%s")
+  DATE=`date`
+  echo -e "\n${CYAN}#######################################################################${NC}"
+  echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
+  . build/envsetup.sh
+  LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
+  installclean && sync && build_rom && result="$?" | tee "$LOG_FILE"
+  echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
+  echo "uploading to pastebin.."
+  echo -n "Done, pastebin link: "
+  cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
+  echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
+  while kill -0 $pid &>/dev/null
+  do
+    for i in "${spin[@]}"
+    do
+      echo -ne "\b$i"
+      sleep 0.1
+    done
+  done
+  BUILD_END=$(date +"%s")
+  DIFF=$(($BUILD_END - $BUILD_START))
+  if [ "$result" = "0" ];
+  then
+    echo -e "\n${GREEN}(i)ROM compilation completed successfully"
+    echo -e "#######################################################################"
+    echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+    echo -e "#######################################################################${NC}"
+  else
+    echo -e "\n${RED}(!)ROM compilation failed"
+    echo -e "#######################################################################"
+    echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+    echo -e "#######################################################################${NC}"
+  fi
+  cd ~/$script_dir
+}
 #
 
 if [ -n "$1" ];then
@@ -295,11 +343,12 @@ while :; do
   start
   case $choice in
     1 ) build;;
-    2 ) clean;;
-    3 ) installclean;;
-    4 ) sync;;
-    5 ) misc;;
-    6 ) settings_info;;
-    7 ) exit 0;;
+    2 ) build_full;;
+    3 ) clean;;
+    4 ) installclean;;
+    5 ) sync;;
+    6 ) misc;;
+    7 ) settings_info;;
+    8 ) exit 0;;
   esac
 done
