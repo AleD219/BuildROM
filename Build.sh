@@ -86,12 +86,13 @@ function start() {
   echo -e "\n${BLUE}BuildROM script $script_ver | By MrYacha & Timur"
 
   echo -e "\n${GREEN}[1]Build ROM"
-  echo -e "[2]Source cleanup"
-  echo -e "[3]Sync repo"
-  echo -e "[4]Misc"
-  echo -e "[5]Settings"
-  echo -e "[6]Quit${NC}"
-  echo -ne "\n${BLUE}(i)Please enter a choice[1-6]:${NC} "
+  echo -e "[2]Source cleanup (clean)"
+  echo -e "[3]Source cleanup (installclean)"
+  echo -e "[4]Sync repo"
+  echo -e "[5]Misc"
+  echo -e "[6]Settings"
+  echo -e "[7]Quit${NC}"
+  echo -ne "\n${BLUE}(i)Please enter a choice[1-7]:${NC} "
 
   read choice
 }
@@ -186,7 +187,7 @@ function sync() {
 
 function clean() {
   cd ~/$rom_dir
-  . build/envsetup.sh && make clean
+  . build/envsetup.sh && make clean && make clobber
   cd ~/$script_dir
   if [ "$use_ccache" = "1" ]; then
   echp "Cleaning ccache.."
@@ -195,6 +196,12 @@ function clean() {
   wait
   echo "CCACHE Cleared"
   fi
+}
+
+function installclean() {
+  cd ~/$rom_dir
+  . build/envsetup.sh && make installclean
+  cd ~/$script_dir
 }
 
 function build_rom() {
@@ -277,9 +284,10 @@ while :; do
   case $choice in
     1 ) build;;
     2 ) clean;;
-    3 ) sync;;
-    4 ) misc;;
-    5 ) settings_info;;
-    6 ) exit 0;;
+    3 ) installclean;;
+    4 ) sync;;
+    5 ) misc;;
+    6 ) settings_info;;
+    7 ) exit 0;;
   esac
 done
