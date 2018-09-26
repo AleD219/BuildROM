@@ -210,6 +210,7 @@ function clean() {
 
 function installclean() {
   cd ~/$rom_dir
+  rm -rf frameworks/base
   . build/envsetup.sh && make installclean
   cd ~/$script_dir
 }
