@@ -39,6 +39,8 @@ function settings() {
   read rom_dir
   echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
   read buildtype
+  echo -ne "${BLUE}Are you building official or unofficial?${NC}"
+  read official
   echo -ne "${BLUE}Please write command to init sources: ${NC}"
   read repo_init
   echo -ne "${BLUE}Do y want to use ccache? [Y/n]: ${NC}"
@@ -57,6 +59,7 @@ function settings() {
   echo -e "${BLUE}Rom name - ${NC}$rom_name"
   echo -e "${BLUE}Rom path - ${NC}$rom_dir"
   echo -e "${BLUE}Build Type - ${NC}$buildtype"
+  echo -e "${BLUE}Official? - ${NC}$official"
   echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
   echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
 
@@ -69,6 +72,7 @@ function settings() {
     echo "rom_name=$rom_name" > ~/$script_dir/config.txt
     echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
     echo "buildtype=$buildtype" >> ~/$script_dir/config.txt
+    echo "official=$official" >> ~/$script_dir/config.txt
     echo "repo_init=\"$repo_init\"" >> ~/$script_dir/config.txt
     echo "use_ccache=$use_ccache" >> ~/$script_dir/config.txt
     echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/config.txt
@@ -160,6 +164,7 @@ function settings_info() {
   echo -e "${CYAN}Rom name - ${NC}$rom_name"
   echo -e "${CYAN}Rom path - ${NC}$rom_dir"
   echo -e "${CYAN}Build type - ${NC}$buildtype"
+  echo -e "${CYAN}Official? - ${NC}$official"
   echo -e "${CYAN}Init ROM sources command - ${NC}$repo_init"
   echo -e "${CYAN}Use ccache - ${NC}$use_ccacheP"
 
@@ -288,6 +293,7 @@ function build_full() {
   echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
   . build/envsetup.sh
   LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
+  export "${rom_name^^}"_BUILD_TYPE="${official^^}"
   installclean && sync && build_rom && result="$?" | tee "$LOG_FILE"
   echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
   echo "uploading to pastebin.."
@@ -296,7 +302,7 @@ function build_full() {
   echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
   echo -e ${cya}"Uploading to mega.nz"
   mega-login "$megauser" "$megapass"
-  mega-put out/target/product/"$device"/"$rom_name"-$date2-*.zip /"$device"_builds/"$rom_name"/
+  mega-put out/target/product/"$device"/"$rom_name"_"$device"*.zip /"$device"_builds/"$rom_name"/
   mega-logout
   wait
   echo -e ${grn}"Uploaded file successfully"
