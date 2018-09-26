@@ -1,5 +1,6 @@
 #!/bin/bash
 #Auto building ROM, by MrYacha and Timur
+export LC_ALL=C #Magic patch for Ubuntu 18.04
 
 # Viriebles section
 script_dir="BuildROM"
