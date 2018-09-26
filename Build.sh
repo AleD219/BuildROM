@@ -99,9 +99,10 @@ function start() {
   echo -e "[4]Source cleanup (installclean)"
   echo -e "[5]Sync repo"
   echo -e "[6]Misc"
-  echo -e "[7]Settings"
-  echo -e "[8]Quit${NC}"
-  echo -ne "\n${BLUE}(i)Please enter a choice[1-8]:${NC} "
+  echo -e "[7]Mega Setup"
+  echo -e "[8]Settings"
+  echo -e "[9]Quit${NC}"
+  echo -ne "\n${BLUE}(i)Please enter a choice[1-9]:${NC} "
 
   read choice
 }
@@ -281,6 +282,7 @@ function build_full() {
 
   mkdir -p '_logs'
   BUILD_START=$(date +"%s")
+  date2="$(date '+%Y%m%d')"
   DATE=`date`
   echo -e "\n${CYAN}#######################################################################${NC}"
   echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
@@ -292,6 +294,12 @@ function build_full() {
   echo -n "Done, pastebin link: "
   cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
   echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
+  echo -e ${cya}"Uploading to mega.nz"
+  mega-login "$megauser" "$megapass"
+  mega-put out/target/product/"$device"/"$rom_name"-$date2-*.zip /"$device"_builds/"$rom_name"/
+  mega-logout
+  wait
+  echo -e ${grn}"Uploaded file successfully"
   while kill -0 $pid &>/dev/null
   do
     for i in "${spin[@]}"
@@ -315,6 +323,16 @@ function build_full() {
     echo -e "#######################################################################${NC}"
   fi
   cd ~/$script_dir
+}
+
+function megasetup() {
+  echo -ne "\n${BLUE}Please write your mega email: ${NC}"
+  read megaemail
+  echo -ne "\n${BLUE}Please write your mega password: ${NC}"
+  read megapass
+  echo "megaemail=$megaemail" > ~/$script_dir/config.txt
+  echo "megapass=$megapass" > ~/$script_dir/config.txt
+  echo -ne "\n${BLUE}now the full build will upload the file on mega.nz!${NC}"
 }
 #
 
@@ -348,7 +366,8 @@ while :; do
     4 ) installclean;;
     5 ) sync;;
     6 ) misc;;
-    7 ) settings_info;;
-    8 ) exit 0;;
+    7 ) megasetup;;
+    8 ) settings_info;;
+    9 ) exit 0;;
   esac
 done
