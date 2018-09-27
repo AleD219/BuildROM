@@ -38,6 +38,8 @@ function settings() {
   read rom_name
   echo -ne "${BLUE}Please write path to ROM dir: ${NC}"
   read rom_dir
+  echo -ne "${BLUE}Please write your rom version: ${NC}"
+  read version
   echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
   read buildtype
   echo -ne "${BLUE}Are you building official or unofficial? ${NC}"
@@ -59,6 +61,7 @@ function settings() {
   echo -e "${BLUE}Device Codename - ${NC}$device"
   echo -e "${BLUE}Rom name - ${NC}$rom_name"
   echo -e "${BLUE}Rom path - ${NC}$rom_dir"
+  echo -e "${BLUE}Version - ${NC}$version"
   echo -e "${BLUE}Build Type - ${NC}$buildtype"
   echo -e "${BLUE}Official? - ${NC}$official"
   echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
@@ -72,6 +75,7 @@ function settings() {
     echo "device=$device" >> ~/$script_dir/config.txt
     echo "rom_name=$rom_name" >> ~/$script_dir/config.txt
     echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
+    echo "version=$version" >> ~/$script_dir/config.txt
     echo "buildtype=$buildtype" >> ~/$script_dir/config.txt
     echo "official=$official" >> ~/$script_dir/config.txt
     echo "repo_init=\"$repo_init\"" >> ~/$script_dir/config.txt
@@ -164,6 +168,7 @@ function settings_info() {
   echo -e "${CYAN}Device Name - ${NC}$device"
   echo -e "${CYAN}Rom name - ${NC}$rom_name"
   echo -e "${CYAN}Rom path - ${NC}$rom_dir"
+  echo -e "${CYAN}Version - ${NC}$version"
   echo -e "${CYAN}Build type - ${NC}$buildtype"
   echo -e "${CYAN}Official? - ${NC}$official"
   echo -e "${CYAN}Init ROM sources command - ${NC}$repo_init"
@@ -305,7 +310,7 @@ function build_full() {
   echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
   echo -e ${cya}"Uploading to mega.nz"
   mega-login "$megaemail" "$megapass"
-  mega-put out/target/product/"$device"/"$rom_name"_"$device"*.zip /"$device"_builds/"$rom_name"/
+  mega-put out/target/product/"$device"/"$rom_name"_"$device"-"$version"*.zip /"$device"_builds/"$rom_name"/
   mega-logout
   wait
   echo -e ${grn}"Uploaded file successfully"
