@@ -33,7 +33,7 @@ fi
 function settings() {
   echo "Script settings"
   echo -ne "${BLUE}Please your device codename: ${NC}"
-  read device
+  read device_codename
   echo -ne "${BLUE}Please write ROM name: ${NC}"
   read rom_name
   echo -ne "${BLUE}Please write path to ROM dir: ${NC}"
@@ -58,7 +58,7 @@ function settings() {
   fi
   
   echo -e "${CYAN}Ok, done, please review your settings:${NC}"
-  echo -e "${BLUE}Device Codename - ${NC}$device"
+  echo -e "${BLUE}Device Codename - ${NC}$device_codename"
   echo -e "${BLUE}Rom name - ${NC}$rom_name"
   echo -e "${BLUE}Rom path - ${NC}$rom_dir"
   echo -e "${BLUE}Version - ${NC}$version"
@@ -72,7 +72,7 @@ function settings() {
   read save
   if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
     echo "Saving settings..."
-    echo "device=$device" >> ~/$script_dir/config.txt
+    echo "device_codename=$device_codename" >> ~/$script_dir/config.txt
     echo "rom_name=$rom_name" >> ~/$script_dir/config.txt
     echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
     echo "version=$version" >> ~/$script_dir/config.txt
@@ -165,7 +165,7 @@ function settings_info() {
 
   echo -e "${BLUE}Current script settings: ${NC}"
 
-  echo -e "${CYAN}Device Name - ${NC}$device"
+  echo -e "${CYAN}Device Name - ${NC}$device_codename"
   echo -e "${CYAN}Rom name - ${NC}$rom_name"
   echo -e "${CYAN}Rom path - ${NC}$rom_dir"
   echo -e "${CYAN}Version - ${NC}$version"
@@ -229,8 +229,8 @@ function installclean() {
 }
 
 function build_rom() {
-  . build/envsetup.sh && lunch "$rom_name"_"$device"-$buildtype
-  brunch $device
+  . build/envsetup.sh && lunch "$rom_name"_"$device_codename"-$buildtype
+  brunch $device_codename
   result="$?"
   return $result
 }
@@ -310,7 +310,7 @@ function build_full() {
   echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
   echo -e ${cya}"Uploading to mega.nz"
   mega-login "$megaemail" "$megapass"
-  mega-put out/target/product/"$device"/"$rom_name"_"$device"-"$version"*.zip /"$device"_builds/"$rom_name"/
+  mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"*.zip /"$device_codename"_builds/"$rom_name"/
   mega-logout
   wait
   echo -e ${grn}"Uploaded file successfully"
