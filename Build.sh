@@ -106,7 +106,7 @@ function start() {
 	echo -e "[6]Misc"
 	echo -e "[7]Mega Setup"
 	echo -e "[8]Settings"
-	echo -e "[9]Quit"
+	echo -e "[Q]Quit"
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-9]:${NC} "
 
 	read choice
@@ -117,7 +117,7 @@ while :; do
 	echo -e "\n${GREEN}[1]Setup local build enviroment"
 	echo -e "[2]Repo init"
 	echo -e "[3]Get help"
-	echo -e "[4]Back to main menu"
+	echo -e "[Q]Back to main menu"
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-4]:${NC} "
 
 	read choice2
@@ -126,7 +126,7 @@ while :; do
 		1 ) setup;;
 		2 ) init;;
 		3 ) help;;
-		4 ) break
+		Q ) break
 	esac
 done
 }
@@ -390,6 +390,6 @@ while :; do
 		6 ) misc;;
 		7 ) megasetup;;
 		8 ) settings_info;;
-		9 ) exit 0;;
+		Q ) exit 0;;
 	esac
 done
