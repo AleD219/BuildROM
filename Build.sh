@@ -5,7 +5,7 @@ export LC_ALL=C #Magic patch for Ubuntu 18.04
 # Viriebles section
 script_dir="BuildROM"
 script_file="Build.sh"
-script_ver="R0.5"
+script_ver="R0.6-WIP"
 #
 
 # Add colors variables
@@ -42,8 +42,6 @@ function settings() {
 	read version
 	echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
 	read buildtype
-	#echo -ne "${BLUE}Are you building official or unofficial? ${NC}"
-	#read official
 	echo -ne "${BLUE}Please write command to init sources: ${NC}"
 	read repo_init
 	echo -ne "${BLUE}Do you want to use ccache? [Y/n]: ${NC}"
@@ -63,7 +61,6 @@ function settings() {
 	echo -e "${BLUE}Rom path - ${NC}$rom_dir"
 	echo -e "${BLUE}Version - ${NC}$version"
 	echo -e "${BLUE}Build Type - ${NC}$buildtype"
-	#echo -e "${BLUE}Official? - ${NC}$official"
 	echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
 	echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
 
@@ -77,7 +74,6 @@ function settings() {
 		echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
 		echo "version=$version" >> ~/$script_dir/config.txt
 		echo "buildtype=$buildtype" >> ~/$script_dir/config.txt
-		#echo "official=$official" >> ~/$script_dir/config.txt
 		echo "repo_init=\"$repo_init\"" >> ~/$script_dir/config.txt
 		echo "use_ccache=$use_ccache" >> ~/$script_dir/config.txt
 		echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/config.txt
@@ -136,7 +132,7 @@ done
 }
 
 function help() {
-	echo -e "\n${RED}ROM building script ${BLUE}R0.4-Beta"
+	echo -e "\n${RED}ROM building script ${BLUE}$script_ver"
 	echo -e "${BLUE}Help:${NC}"
 	echo "Run script with \"--setup\" parameter for setup local build enviroment"
 	echo "\"--init\" will be init repo of ROM source"
@@ -146,6 +142,7 @@ function help() {
 }
 
 function setup() {
+	#Make a magic with your PC
 	echo "\nSetuping local build enviroment..."
 	echo "Step 1 - Installing git"
 	sudo apt install git -y
@@ -170,7 +167,6 @@ function settings_info() {
 	echo -e "${CYAN}Rom path - ${NC}$rom_dir"
 	echo -e "${CYAN}Version - ${NC}$version"
 	echo -e "${CYAN}Build type - ${NC}$buildtype"
-	echo -e "${CYAN}Official? - ${NC}$official"
 	echo -e "${CYAN}Init ROM sources command - ${NC}$repo_init"
 	echo -e "${CYAN}Use ccache - ${NC}$use_ccacheP"
 
@@ -314,12 +310,7 @@ function build_full() {
 	echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
 	echo -e ${cya}"Uploading to mega.nz"
 	mega-login "$megaemail" "$megapass"
-	if [ "$rom_name" = "aosip" ];
-	then
-		mega-put out/target/product/"$device_codename"/AOSiP-9.0-Pizza-"$device_codename"*.zip /"$device_codename"_builds/"$rom_name"/
-	else
-		mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"*.zip /"$device_codename"_builds/"$rom_name"/
-	fi
+	mega-put out/target/product/"$device_codename"/*.zip /"$device_codename"_builds/"$rom_name"/
 	mega-logout
 	wait
 	echo -e ${grn}"Uploaded file successfully"
