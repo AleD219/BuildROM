@@ -230,7 +230,7 @@ function installclean() {
 function build_rom() {
 	. build/envsetup.sh
 	lunch "$rom_name"_"$device_codename"-$buildtype
-	if [$rom_name == "aosip"]; then
+	if [ "$rom_name" = "aosip" ]; then
 		time mka kronic
 	else
 		brunch $device_codename
@@ -314,7 +314,7 @@ function build_full() {
 	echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
 	echo -e ${cya}"Uploading to mega.nz"
 	mega-login "$megaemail" "$megapass"
-	if [$rom_name == "aosip"];
+	if [ "$rom_name" = "aosip" ];
 	then
 		mega-put out/target/product/"$device_codename"/AOSiP-9.0-Pizza-"$device_codename"*.zip /"$device_codename"_builds/"$rom_name"/
 	else
