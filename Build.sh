@@ -315,7 +315,11 @@ function build_full() {
   echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
   echo -e ${cya}"Uploading to mega.nz"
   mega-login "$megaemail" "$megapass"
-  mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"*.zip /"$device_codename"_builds/"$rom_name"/
+  if [$rom_name == "aosip"]
+    mega-put out/target/product/"$device_codename"/AOSiP-9.0-Pizza-"$device_codename"*.zip /"$device_codename"_builds/"$rom_name"/
+  else
+    mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"*.zip /"$device_codename"_builds/"$rom_name"/
+  fi
   mega-logout
   wait
   echo -e ${grn}"Uploaded file successfully"
