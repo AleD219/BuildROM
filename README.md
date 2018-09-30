@@ -15,6 +15,6 @@ For start using BuildROM you need download it to ~/BuildROM/Build.sh
 
     mkdir -p ~/BuildROM 
     cd ~/BuildROM
-    wget https://github.com/AleD219/BuildRom/blob/master/Build.sh Build.sh
+    wget https://github.com/AleD219/BuildRom/blob/rom1/Build.sh Build.sh
     bash Build.sh
 
