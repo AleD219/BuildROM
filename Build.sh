@@ -229,8 +229,13 @@ function installclean() {
 }
 
 function build_rom() {
-  . build/envsetup.sh && lunch "$rom_name"_"$device_codename"-$buildtype
-  brunch $device_codename
+  . build/envsetup.sh
+  lunch "$rom_name"_"$device_codename"-$buildtype
+  if [$rom_name == "aosip"]; then
+    time mka kronic
+  else
+    brunch $device_codename
+  fi
   result="$?"
   return $result
 }
