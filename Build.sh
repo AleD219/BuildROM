@@ -42,8 +42,8 @@ function settings() {
 	read version
 	echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
 	read buildtype
-	echo -ne "${BLUE}Are you building official or unofficial? ${NC}"
-	read official
+	#echo -ne "${BLUE}Are you building official or unofficial? ${NC}"
+	#read official
 	echo -ne "${BLUE}Please write command to init sources: ${NC}"
 	read repo_init
 	echo -ne "${BLUE}Do you want to use ccache? [Y/n]: ${NC}"
@@ -63,7 +63,7 @@ function settings() {
 	echo -e "${BLUE}Rom path - ${NC}$rom_dir"
 	echo -e "${BLUE}Version - ${NC}$version"
 	echo -e "${BLUE}Build Type - ${NC}$buildtype"
-	echo -e "${BLUE}Official? - ${NC}$official"
+	#echo -e "${BLUE}Official? - ${NC}$official"
 	echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
 	echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
 
@@ -77,7 +77,7 @@ function settings() {
 		echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
 		echo "version=$version" >> ~/$script_dir/config.txt
 		echo "buildtype=$buildtype" >> ~/$script_dir/config.txt
-		echo "official=$official" >> ~/$script_dir/config.txt
+		#echo "official=$official" >> ~/$script_dir/config.txt
 		echo "repo_init=\"$repo_init\"" >> ~/$script_dir/config.txt
 		echo "use_ccache=$use_ccache" >> ~/$script_dir/config.txt
 		echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/config.txt
@@ -100,17 +100,17 @@ fi
 
 # Functions section
 function start() {
-	echo -e "\n${BLUE}BuildROM script $script_ver | By MrYacha & Timur"
+	echo -e "\n${BLUE}BuildROM script $script_ver | By MrYacha, Timur and AleD219"
 
 	echo -e "\n${GREEN}[1]Build ROM"
-	echo -e "${GREEN}[2]Build ROM (full)"
+	echo -e "[2]Build ROM (full)"
 	echo -e "[3]Source cleanup (clean)"
 	echo -e "[4]Source cleanup (installclean)"
 	echo -e "[5]Sync repo"
 	echo -e "[6]Misc"
 	echo -e "[7]Mega Setup"
 	echo -e "[8]Settings"
-	echo -e "[9]Quit${NC}"
+	echo -e "[9]Quit"
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-9]:${NC} "
 
 	read choice
@@ -121,7 +121,7 @@ while :; do
 	echo -e "\n${GREEN}[1]Setup local build enviroment"
 	echo -e "[2]Repo init"
 	echo -e "[3]Get help"
-	echo -e "[4]Back to main menu${NC}"
+	echo -e "[4]Back to main menu"
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-4]:${NC} "
 
 	read choice2
@@ -136,7 +136,7 @@ done
 }
 
 function help() {
-	echo -e "\n${RED}ROM building script ${BLUE}R0.4-Beta${NC}"
+	echo -e "\n${RED}ROM building script ${BLUE}R0.4-Beta"
 	echo -e "${BLUE}Help:${NC}"
 	echo "Run script with \"--setup\" parameter for setup local build enviroment"
 	echo "\"--init\" will be init repo of ROM source"
