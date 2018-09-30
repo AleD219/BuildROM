@@ -223,7 +223,6 @@ function clean() {
 
 function installclean() {
   cd ~/$rom_dir
-  rm -rf frameworks/base
   . build/envsetup.sh && make installclean
   cd ~/$script_dir
 }
@@ -358,12 +357,19 @@ function megasetup() {
   echo -ne "\n${BLUE}now the full build will upload the file on mega.nz! Restart the script.${NC}"
   exit
 }
+
+function delfwb() {
+  rm -rf ~/$rom_dir/frameworks/base
+  echo "FWB Deleted!"
+}
+
 #
 
 if [ -n "$1" ];then
   while [ -n "$1" ]
   do
     case "$1" in
+      -fwb ) delfwb ;;
       --help | -h) help ;;
       --setup) setup ;;
       --init) init ;;
