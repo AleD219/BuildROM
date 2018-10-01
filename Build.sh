@@ -338,6 +338,7 @@ function build() {
 	DATE=`date`
 	echo -e "\n${CYAN}#######################################################################${NC}"
 	echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
+	export SELINUX_IGNORE_NEVERALLOWS=true
 	. build/envsetup.sh
 	LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
 	build_rom && result="$?" | tee "$LOG_FILE"
