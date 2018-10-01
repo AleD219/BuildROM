@@ -7,6 +7,7 @@ export LC_ALL=C #Magic patch for Ubuntu 18.04
 script_dir="BuildROM"
 script_file="Build.sh"
 script_ver="R0.7"
+username="$USER"
 
 curr_conf="configs/conf1.txt"
 #
