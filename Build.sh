@@ -5,7 +5,7 @@ export LC_ALL=C #Magic patch for Ubuntu 18.04
 # Viriebles section
 script_dir="BuildROM"
 script_file="Build.sh"
-script_ver="R0.6-WIP"
+script_ver="R0.7"
 
 curr_conf="configs/conf1.txt"
 #
