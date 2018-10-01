@@ -106,18 +106,19 @@ main() {
 
 	# Functions section
 	function start() {
-		echo -e "\n${BLUE}BuildROM script $script_ver | By MrYacha, Timur and AleD219"
+		echo -e "\n${BLUE}BuildROM script ${CYAN}$script_ver${BLUE} | By MrYacha, Timur and AleD219"
+		echo -e "${CYAN}Current ROM - $rom_name"
 
-		echo -e "\n${GREEN}[1]Build ROM"
-		echo -e "[2]Source cleanup (clean)"
-		echo -e "[3]Source cleanup (installclean)"
-		echo -e "[4]Sync repo"
-		echo -e "[5]Misc"
-		echo -e "[6]Mega Setup"
-		echo -e "[7]Change script config"
-		echo -e "[8]Settings"
-		echo -e "[Q]Quit"
-		echo -ne "\n${BLUE}(i)Please enter a choice[1-9]:${NC} "
+		echo -e "\n${GREEN}[1] Build ROM"
+		echo -e "[2] Source cleanup (clean)"
+		echo -e "[3] Source cleanup (installclean)"
+		echo -e "[4] Sync repo"
+		echo -e "[5] Misc"
+		echo -e "[6] Mega Setup"
+		echo -e "[7] Change script config"
+		echo -e "[8] Settings"
+		echo -e "[Q] Quit"
+		echo -ne "\n${BLUE}(i)Please enter a choice[1-8/Q]:${NC} "
 
 		read choice
 	}
