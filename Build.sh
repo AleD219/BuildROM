@@ -1,5 +1,6 @@
 #!/bin/bash
 #Auto building ROM, by MrYacha, Timur and AleD219
+main() {
 export LC_ALL=C #Magic patch for Ubuntu 18.04
 
 # Viriebles section
@@ -38,7 +39,7 @@ function settings() {
 	read device_codename
 	echo -ne "${BLUE}Please write ROM name: ${NC}"
 	read rom_name
-	echo -ne "${BLUE}Please write path to ROM dir: ${NC}"
+	echo -ne "${BLUE}Please write path to ROM dir:${NC} ~/"
 	read rom_dir
 	echo -ne "${BLUE}Please write your rom version: ${NC}"
 	read version
@@ -83,7 +84,7 @@ function settings() {
 		exit
 	else
 		echo "Settings don't changed!"
-		start
+		main
 	fi
 }
 
@@ -204,7 +205,7 @@ function change_space() {
 
 	if [ "$choose_space" -gt "5" ];then
 		echo "Invalid number! Please write number from 1 to 5"
-		start
+		main
 	fi
 
 	#Magic! Don't touch!
@@ -259,7 +260,7 @@ function settings_info() {
 		settings
 	else
 		echo "going to main screen"
-		start
+		main
 	fi
 
 	exit
@@ -418,3 +419,7 @@ while :; do
 		Q ) exit 0;;
 	esac
 done
+}
+
+#Main
+main
