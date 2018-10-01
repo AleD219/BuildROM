@@ -299,7 +299,7 @@ function clean() {
 	cd ~/$script_dir
 	if [ "$use_ccache" = "1" ]; then
 	echo "Cleaning ccache.."
-	export CCACHE_DIR=/home/ccache/$username
+	export CCACHE_DIR=/home/$username/.ccache
 	ccache -C
 	wait
 	echo "CCACHE Cleared"
@@ -329,7 +329,7 @@ function build() {
 	if [ "$use_ccache" = "1" ]; then
 	echo "Setupping ccache..."
 	export USE_CCACHE=1
-	export CCACHE_DIR=/home/ccache/$username
+	export CCACHE_DIR=/home/$username/.ccache
 	ccache -M 35G
 	fi
 
