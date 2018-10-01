@@ -6,8 +6,10 @@ export LC_ALL=C #Magic patch for Ubuntu 18.04
 script_dir="BuildROM"
 script_file="Build.sh"
 script_ver="R0.6-WIP"
-#
 
+curr_conf="configs/conf1.txt"
+#
+echo "${curr_conf}"
 # Add colors variables
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -69,14 +71,14 @@ function settings() {
 	read save
 	if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
 		echo "Saving settings..."
-		echo "device_codename=$device_codename" >> ~/$script_dir/config.txt
-		echo "rom_name=$rom_name" >> ~/$script_dir/config.txt
-		echo "rom_dir=$rom_dir" >> ~/$script_dir/config.txt
-		echo "version=$version" >> ~/$script_dir/config.txt
-		echo "buildtype=$buildtype" >> ~/$script_dir/config.txt
-		echo "repo_init=\"$repo_init\"" >> ~/$script_dir/config.txt
-		echo "use_ccache=$use_ccache" >> ~/$script_dir/config.txt
-		echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/config.txt
+		echo "device_codename=$device_codename" > ~/$script_dir/${curr_conf}
+		echo "rom_name=$rom_name" >> ~/$script_dir/${curr_conf}
+		echo "rom_dir=$rom_dir" >> ~/$script_dir/${curr_conf}
+		echo "version=$version" >> ~/$script_dir/${curr_conf}
+		echo "buildtype=$buildtype" >> ~/$script_dir/${curr_conf}
+		echo "repo_init=\"$repo_init\"" >> ~/$script_dir/${curr_conf}
+		echo "use_ccache=$use_ccache" >> ~/$script_dir/${curr_conf}
+		echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/${curr_conf}
 		echo "Settings saved, please reopen script"
 		exit
 	else
@@ -85,13 +87,19 @@ function settings() {
 	fi
 }
 
-if [ ! -e ~/$script_dir/config.txt ];then
+if [ ! -e ~/$script_dir/${curr_conf} ];then
 	echo -e "${BLUE}No configuration file, please setup${NC}"
+
+	if [ ! -e ~/$script_dir/configs/ ];then
+	mkdir ~/$script_dir/configs/
+	fi
+
+	touch ~/$script_dir/${curr_conf}
 	settings
 fi
 
 #Import variables from config file
-. ~/$script_dir/config.txt
+. ~/$script_dir/${curr_conf}
 #
 
 # Functions section
@@ -105,7 +113,8 @@ function start() {
 	echo -e "[5]Sync repo"
 	echo -e "[6]Misc"
 	echo -e "[7]Mega Setup"
-	echo -e "[8]Settings"
+	echo -e "[8]Change script config"
+	echo -e "[9]Settings"
 	echo -e "[Q]Quit"
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-9]:${NC} "
 
@@ -129,6 +138,72 @@ while :; do
 		Q ) break
 	esac
 done
+}
+
+function change_space() {
+	echo -e "${BLUE}Change script config"
+	echo -e "${CYAN}Current config: ${rom_name}${GREEN}"
+
+	if [ -e ~/$script_dir/configs/conf1.txt ];then
+		. ~/$script_dir/configs/conf1.txt
+		if [ "${curr_conf}" = "configs/conf1.txt" ];then
+			echo -e "${CYAN}[1]: ${rom_name} ${GREEN}"
+
+		else
+			echo -e "[1]: ${rom_name}"
+		fi
+	fi
+
+	if [ -e ~/$script_dir/configs/conf2.txt ];then
+		. ~/$script_dir/configs/conf2.txt
+		if [ "${curr_conf}" = "configs/conf2.txt" ];then
+			echo -e "${CYAN}[2]: ${rom_name} ${GREEN}"
+
+		else
+			echo -e "[2]: ${rom_name}"
+		fi
+	fi
+
+	if [ -e ~/$script_dir/configs/conf3.txt ];then
+		. ~/$script_dir/configs/conf3.txt
+		if [ "${curr_conf}" = "configs/conf3.txt" ];then
+			echo -e "${CYAN}[3]: ${rom_name} ${GREEN}"
+
+		else
+			echo -e "[3]: ${rom_name}"
+		fi
+	fi
+
+	if [ -e ~/$script_dir/configs/conf4.txt ];then
+		. ~/$script_dir/configs/conf4.txt
+		if [ "${curr_conf}" = "configs/conf4.txt" ];then
+			echo -e "${CYAN}[4]: ${rom_name} ${GREEN}"
+
+		else
+			echo -e "[4]: ${rom_name}"
+		fi
+	fi
+
+	if [ -e ~/$script_dir/configs/conf5.txt ];then
+		. ~/$script_dir/configs/conf5.txt
+		if [ "${curr_conf}" = "configs/conf5.txt" ];then
+			echo -e "${CYAN}[5]: ${rom_name} ${GREEN}"
+
+		else
+			echo -e "[5]: ${rom_name}"
+		fi
+	fi
+
+	#if -e
+
+	echo -ne "\n${BLUE}(i)Please enter a choice[1-5]: ${NC}"
+
+	read choose_space
+
+	#Magic! Don't touch!
+	sed -i -e "s/curr_conf=\".*\"/curr_conf=\"configs\/conf$choose_space.txt\"/" -l 10 Build.sh
+
+	exit
 }
 
 function help() {
@@ -344,8 +419,8 @@ function megasetup() {
 	read megaemail
 	echo -ne "\n${BLUE}Please write your mega password: ${NC}"
 	read megapass
-	echo "megaemail=$megaemail" >> ~/$script_dir/config.txt
-	echo "megapass=$megapass" >> ~/$script_dir/config.txt
+	echo "megaemail=$megaemail" >> ~/$script_dir/${curr_conf}
+	echo "megapass=$megapass" >> ~/$script_dir/${curr_conf}
 	echo -ne "\n${BLUE}now the full build will upload the file on mega.nz! Restart the script.${NC}"
 	exit
 }
@@ -389,7 +464,8 @@ while :; do
 		5 ) sync;;
 		6 ) misc;;
 		7 ) megasetup;;
-		8 ) settings_info;;
+		8 ) change_space;;
+		9 ) settings_info;;
 		Q ) exit 0;;
 	esac
 done
