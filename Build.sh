@@ -344,6 +344,12 @@ function build() {
 	echo "uploading to pastebin.."
 	echo -n "Done, pastebin link: "
 	cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
+	echo -e ${cya}"Uploading to mega.nz"
+	mega-login "$megaemail" "$megapass"
+	mega-put out/target/product/"$device_codename"/*.zip /"$device_codename"_builds/"$rom_name"/
+	mega-logout
+	wait
+	echo -e ${grn}"Uploaded file successfully"
 	echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
 	while kill -0 $pid &>/dev/null
 	do
