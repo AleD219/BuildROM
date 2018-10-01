@@ -403,6 +403,7 @@ if [ -n "$1" ];then
 			sync
 			shift;;
 			--clean | -c) clean ;;
+			--installclean | -ic) installclean ;;
 			--build | -b) build_full ;;
 		esac
 		shift
