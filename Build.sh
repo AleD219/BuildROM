@@ -9,7 +9,7 @@ script_ver="R0.6-WIP"
 
 curr_conf="configs/conf1.txt"
 #
-echo "${curr_conf}"
+
 # Add colors variables
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -193,6 +193,9 @@ function change_space() {
 		fi
 	fi
 
+	#Restore current configs
+	. ~/$script_dir/${curr_conf}
+
 	#if -e
 
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-5]: ${NC}"
@@ -361,7 +364,7 @@ function build() {
 	cd ~/$script_dir
 }
 
-function megasetup() {
+function cloud_setup() {
 	echo -ne "\n${BLUE}Please write your mega email: ${NC}"
 	read megaemail
 	echo -ne "\n${BLUE}Please write your mega password: ${NC}"
@@ -409,7 +412,7 @@ while :; do
 		3 ) installclean;;
 		4 ) sync;;
 		5 ) misc;;
-		6 ) megasetup;;
+		6 ) cloud_setup;;
 		7 ) change_space;;
 		8 ) settings_info;;
 		Q ) exit 0;;
