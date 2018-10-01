@@ -200,6 +200,11 @@ function change_space() {
 
 	read choose_space
 
+	if [ "$choose_space" -gt "5" ];then
+		echo "Invalid number! Please write number from 1 to 5"
+		start
+	fi
+
 	#Magic! Don't touch!
 	sed -i -e "s/curr_conf=\".*\"/curr_conf=\"configs\/conf$choose_space.txt\"/" -l 10 Build.sh
 
