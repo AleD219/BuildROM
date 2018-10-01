@@ -402,7 +402,7 @@ if [ -n "$1" ];then
 			--help | -h) help ;;
 			--setup) setup ;;
 			--init) init ;;
-			--sync)
+			--sync | -s)
 			if [[ "$2" = "-force" || "$2" = "-f" ]];then
 				FORCE_SYNC=1
 			fi
@@ -410,7 +410,7 @@ if [ -n "$1" ];then
 			shift;;
 			--clean | -c) clean ;;
 			--installclean | -ic) installclean ;;
-			--build | -b) build_full ;;
+			--build | -b) build ;;
 		esac
 		shift
 	done
