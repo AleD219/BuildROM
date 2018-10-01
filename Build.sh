@@ -107,14 +107,13 @@ function start() {
 	echo -e "\n${BLUE}BuildROM script $script_ver | By MrYacha, Timur and AleD219"
 
 	echo -e "\n${GREEN}[1]Build ROM"
-	echo -e "[2]Build ROM (full)"
-	echo -e "[3]Source cleanup (clean)"
-	echo -e "[4]Source cleanup (installclean)"
-	echo -e "[5]Sync repo"
-	echo -e "[6]Misc"
-	echo -e "[7]Mega Setup"
-	echo -e "[8]Change script config"
-	echo -e "[9]Settings"
+	echo -e "[2]Source cleanup (clean)"
+	echo -e "[3]Source cleanup (installclean)"
+	echo -e "[4]Sync repo"
+	echo -e "[5]Misc"
+	echo -e "[6]Mega Setup"
+	echo -e "[7]Change script config"
+	echo -e "[8]Settings"
 	echo -e "[Q]Quit"
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-9]:${NC} "
 
@@ -362,63 +361,6 @@ function build() {
 	cd ~/$script_dir
 }
 
-function build_full() {
-	cd ~/$rom_dir
-	if [ "$use_ccache" = "1" ]; then
-	echo "Setupping ccache..."
-	export USE_CCACHE=1
-	ccache -M 35G
-	fi
-
-	mkdir -p '_logs'
-	BUILD_START=$(date +"%s")
-	date2="$(date '+%Y%m%d')"
-	DATE=`date`
-	echo -e "\n${CYAN}#######################################################################${NC}"
-	echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
-	export SELINUX_IGNORE_NEVERALLOWS=true
-	. build/envsetup.sh
-	LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
-	export "${rom_name^^}"_BUILD_TYPE="${official^^}"
-	installclean && sync
-	cd ~/$rom_dir
-	build_rom && result="$?" | tee "$LOG_FILE"
-	echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
-	echo "uploading to pastebin.."
-	echo -n "Done, pastebin link: "
-	cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
-	echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
-	echo -e ${cya}"Uploading to mega.nz"
-	mega-login "$megaemail" "$megapass"
-	mega-put out/target/product/"$device_codename"/*.zip /"$device_codename"_builds/"$rom_name"/
-	mega-logout
-	wait
-	echo -e ${grn}"Uploaded file successfully"
-	while kill -0 $pid &>/dev/null
-	do
-		for i in "${spin[@]}"
-		do
-			echo -ne "\b$i"
-			sleep 0.1
-		done
-	done
-	BUILD_END=$(date +"%s")
-	DIFF=$(($BUILD_END - $BUILD_START))
-	if [ "$result" = "0" ];
-	then
-		echo -e "\n${GREEN}(i)ROM compilation completed successfully"
-		echo -e "#######################################################################"
-		echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
-		echo -e "#######################################################################${NC}"
-	else
-		echo -e "\n${RED}(!)ROM compilation failed"
-		echo -e "#######################################################################"
-		echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
-		echo -e "#######################################################################${NC}"
-	fi
-	cd ~/$script_dir
-}
-
 function megasetup() {
 	echo -ne "\n${BLUE}Please write your mega email: ${NC}"
 	read megaemail
@@ -463,14 +405,13 @@ while :; do
 	start
 	case $choice in
 		1 ) build;;
-		2 ) build_full;;
-		3 ) clean;;
-		4 ) installclean;;
-		5 ) sync;;
-		6 ) misc;;
-		7 ) megasetup;;
-		8 ) change_space;;
-		9 ) settings_info;;
+		2 ) clean;;
+		3 ) installclean;;
+		4 ) sync;;
+		5 ) misc;;
+		6 ) megasetup;;
+		7 ) change_space;;
+		8 ) settings_info;;
 		Q ) exit 0;;
 	esac
 done
