@@ -55,6 +55,8 @@ function settings() {
 	read version
 	echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
 	read buildtype
+	echo -ne "${BLUE}Are you building official or unofficial?${NC}"
+  	read official
 	echo -ne "${BLUE}Please write command to init sources: ${NC}"
 	read repo_init
 	echo -ne "${BLUE}Do you want to use ccache? [Y/n]: ${NC}"
@@ -74,6 +76,7 @@ function settings() {
 	echo -e "${BLUE}Rom path - ${NC}$rom_dir"
 	echo -e "${BLUE}Version - ${NC}$version"
 	echo -e "${BLUE}Build Type - ${NC}$buildtype"
+	echo -e "${BLUE}Official? - ${NC}$official"
 	echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
 	echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
 
@@ -87,6 +90,7 @@ function settings() {
 		echo "rom_dir=$rom_dir" >> ~/$script_dir/${curr_conf}
 		echo "version=$version" >> ~/$script_dir/${curr_conf}
 		echo "buildtype=$buildtype" >> ~/$script_dir/${curr_conf}
+		echo "official=$official" >> ~/$script_dir/${curr_conf}
 		echo "repo_init=\"$repo_init\"" >> ~/$script_dir/${curr_conf}
 		echo "use_ccache=$use_ccache" >> ~/$script_dir/${curr_conf}
 		echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/${curr_conf}
@@ -207,6 +211,7 @@ function settings_info() {
 	echo -e "${GREEN}Rom path - ${NC}$rom_dir"
 	echo -e "${GREEN}Version - ${NC}$version"
 	echo -e "${GREEN}Build type - ${NC}$buildtype"
+	echo -e "${CYAN}Official? - ${NC}$official"
 	echo -e "${GREEN}Init ROM sources command - ${NC}$repo_init"
 	echo -e "${GREEN}Use ccache - ${NC}$use_ccacheP"
 	echo
@@ -318,6 +323,7 @@ function build() {
 	echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
 	export SELINUX_IGNORE_NEVERALLOWS=true
 	. build/envsetup.sh
+	export "${rom_name^^}"_BUILD_TYPE="${official^^}"
 	LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
 	build_rom && result="$?" | tee "$LOG_FILE"
 	echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
