@@ -286,6 +286,7 @@ function installclean() {
 	cd ~/$rom_dir
 
 	. build/envsetup.sh
+	lunch "$rom_name"_"$device_codename"-$buildtype
 	make installclean
 
 	cd ~/$script_dir
