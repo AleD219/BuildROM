@@ -9,7 +9,7 @@ script_file="Build.sh"
 script_ver="R0.7"
 username="$USER"
 
-curr_conf="configs/conf1.txt"
+curr_conf="configs/conf4.txt"
 #
 
 # Add colors variables
@@ -35,6 +35,11 @@ fi
 #Some system functions
 
 function restart() {
+	if [ "$Z" = "1" ]; then
+		clear
+		bash ~/$script_dir/$script_file settings_info
+	fi
+
 	bash ~/$script_dir/$script_file
 }
 
@@ -104,7 +109,7 @@ if [ ! -e ~/$script_dir/${curr_conf} ];then
 	settings
 fi
 
-#Import variables from config file
+#Import variables from current config file
 . ~/$script_dir/${curr_conf}
 #
 
@@ -119,8 +124,7 @@ function start() {
 	echo -e "[4] Sync repo"
 	echo -e "[5] Misc"
 	echo -e "[6] Mega Setup"
-	echo -e "[7] Change script config"
-	echo -e "[8] Settings"
+	echo -e "[7] Settings"
 	echo -e "[Q] Quit"
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-8/Q]:${NC} "
 
@@ -128,101 +132,28 @@ function start() {
 }
 
 function misc() {
-while :; do
-	echo -e "\n${GREEN}[1]Setup local build enviroment"
-	echo -e "[2]Repo init"
-	echo -e "[3]Get help"
-	echo -e "[Q]Back to restart menu"
-	echo -ne "\n${BLUE}(i)Please enter a choice[1-4]:${NC} "
+	while :; do
+		echo -e "\n${GREEN}[1] Setup local build enviroment"
+		echo -e "[2] Repo init"
+		echo -e "[3] Get help"
+		echo -e "[Q] Back to restart menu"
+		echo -ne "\n${BLUE}(i)Please enter a choice[1-4]:${NC} "
 
-	read choice2
+		read choice2
 
-	case $choice2 in
-		1 ) setup;;
-		2 ) init;;
-		3 ) help;;
-		Q ) break
-	esac
-done
-}
-
-function change_space() {
-	echo -e "${BLUE}Change script config"
-	echo -e "${CYAN}Current config: ${rom_name}${GREEN}"
-
-	if [ -e ~/$script_dir/configs/conf1.txt ];then
-		. ~/$script_dir/configs/conf1.txt
-		if [ "${curr_conf}" = "configs/conf1.txt" ];then
-			echo -e "${CYAN}[1]: ${rom_name} ${GREEN}"
-
-		else
-			echo -e "[1]: ${rom_name}"
-		fi
-	fi
-
-	if [ -e ~/$script_dir/configs/conf2.txt ];then
-		. ~/$script_dir/configs/conf2.txt
-		if [ "${curr_conf}" = "configs/conf2.txt" ];then
-			echo -e "${CYAN}[2]: ${rom_name} ${GREEN}"
-
-		else
-			echo -e "[2]: ${rom_name}"
-		fi
-	fi
-
-	if [ -e ~/$script_dir/configs/conf3.txt ];then
-		. ~/$script_dir/configs/conf3.txt
-		if [ "${curr_conf}" = "configs/conf3.txt" ];then
-			echo -e "${CYAN}[3]: ${rom_name} ${GREEN}"
-
-		else
-			echo -e "[3]: ${rom_name}"
-		fi
-	fi
-
-	if [ -e ~/$script_dir/configs/conf4.txt ];then
-		. ~/$script_dir/configs/conf4.txt
-		if [ "${curr_conf}" = "configs/conf4.txt" ];then
-			echo -e "${CYAN}[4]: ${rom_name} ${GREEN}"
-
-		else
-			echo -e "[4]: ${rom_name}"
-		fi
-	fi
-
-	if [ -e ~/$script_dir/configs/conf5.txt ];then
-		. ~/$script_dir/configs/conf5.txt
-		if [ "${curr_conf}" = "configs/conf5.txt" ];then
-			echo -e "${CYAN}[5]: ${rom_name} ${GREEN}"
-
-		else
-			echo -e "[5]: ${rom_name}"
-		fi
-	fi
-
-	#Restore current configs
-	. ~/$script_dir/${curr_conf}
-
-	#if -e
-
-	echo -ne "\n${BLUE}(i)Please enter a choice[1-5]: ${NC}"
-
-	read choose_space
-
-	if [ "$choose_space" -gt "5" ];then
-		echo "Invalid number! Please write number from 1 to 5"
-		restart
-	fi
-
-	#Magic! Don't touch!
-	sed -i -e "s/curr_conf=\".*\"/curr_conf=\"configs\/conf$choose_space.txt\"/" -l 10 Build.sh
-
-	exit
+		case $choice2 in
+			1 ) setup;;
+			2 ) init;;
+			3 ) help;;
+			Q ) break
+		esac
+	done
 }
 
 function help() {
-	echo -e "\n${RED}ROM building script ${BLUE}$script_ver"
-	echo -e "${BLUE}Help:${NC}"
+	echo
+	echo -e "${BLUE}BuildROM script ${CYAN}$script_ver${BLUE} | By MrYacha, Timur and AleD219"
+	echo -e "${BLUE}Script parameters help:${NC}"
 	echo "Run script with \"--setup\" parameter for setup local build enviroment"
 	echo "\"--init\" will be init repo of ROM source"
 	echo "\"--sync\" will be download ROM sources"
@@ -249,23 +180,55 @@ function setup() {
 
 function settings_info() {
 
-	echo -e "${BLUE}Current script settings: ${NC}"
+	echo -e "${BLUE}Change script config"
+	echo -e "${CYAN}Current config: ${rom_name}${GREEN}"
+	N="1" #Start from 1, don't kick me!
 
-	echo -e "${CYAN}Device Name - ${NC}$device_codename"
-	echo -e "${CYAN}Rom name - ${NC}$rom_name"
-	echo -e "${CYAN}Rom path - ${NC}$rom_dir"
-	echo -e "${CYAN}Version - ${NC}$version"
-	echo -e "${CYAN}Build type - ${NC}$buildtype"
-	echo -e "${CYAN}Init ROM sources command - ${NC}$repo_init"
-	echo -e "${CYAN}Use ccache - ${NC}$use_ccacheP"
+	for i in $( ls ~/$script_dir/configs )
+	do
+		. ~/$script_dir/configs/conf$N.txt
+		#Highlight current config
+		if [ "${curr_conf}" = "configs/conf$N.txt" ];then
+			echo -e "${CYAN}[$N]: ${rom_name}"
+		else
+    		echo -e "${GREEN}[$N]: ${NC}${rom_name}"
+		fi
+		#Add 1 in var for end of cycle
+		let "N = $N + 1"
+	done
 
-	echo -ne "${BLUE}Do you want to change? [Y/n]: ${NC}"
-	read change_setings
+	#Restore current configs
+	. ~/$script_dir/${curr_conf}
 
-	if [ "$change_setings" = "y" ] || [ "$change_setings" = "Y" ]; then
+	echo -e "${BLUE}Current config settings: ${NC}"
+	echo
+	echo -e "${GREEN}Device Name - ${NC}$device_codename"
+	echo -e "${GREEN}Rom name - ${NC}$rom_name"
+	echo -e "${GREEN}Rom path - ${NC}$rom_dir"
+	echo -e "${GREEN}Version - ${NC}$version"
+	echo -e "${GREEN}Build type - ${NC}$buildtype"
+	echo -e "${GREEN}Init ROM sources command - ${NC}$repo_init"
+	echo -e "${GREEN}Use ccache - ${NC}$use_ccacheP"
+	echo
+	echo -e "${BLUE}Commands avaible: ${NC}"
+	echo -e "${CYAN}Q - for go back | S - for setting current config | [1/~] For change config file" #TODO: Simplify this text
+	echo -ne "${BLUE}Your command: ${NC}"
+	read curr_cmd
+
+	if [ "$curr_cmd" = "S" ] || [ "$change_setings" = "s" ]; then
 		settings
-	else
-		echo "going to restart screen"
+	fi
+
+	if [ "$curr_cmd" = "Q" ] || [ "$change_setings" = "q" ]; then
+		restart
+	fi
+
+	if [[ $curr_cmd =~ $re ]] ; then
+		#Make a sed on Build.sh for change curr_conf variable
+		#Magic! Don't touch!
+		sed -i -e "s/curr_conf=\".*\"/curr_conf=\"configs\/conf$curr_cmd.txt\"/" -l 10 Build.sh
+		Z="1"
+		echo $Z
 		restart
 	fi
 
@@ -276,7 +239,7 @@ function init() {
 	echo -e "\n${BLUE}(i)Initializing Repo...${NC}"
 	mkdir ~/$rom_dir
 	cd ~/$rom_dir
-	$repo_init #Use command from variable
+	$repo_init #Use command from variable | TODO: use link for repo, no need to force the user to remember repo
 	cd ~/$script_dir
 }
 
@@ -285,37 +248,48 @@ function sync() {
 	echo -e "\n${BLUE}(i)Syncing $rom_name repo...${NC}"
 	if [ "$FORCE_SYNC" = 1 ]; then
 		echo "Force sync!"
-		repo sync -f -c --no-clone-bundle --no-tags --force-sync
+		repo sync -f -c --force-sync
 	else
 		echo "Normal sync"
-		repo sync -f -c --no-clone-bundle --no-tags
+		repo sync -f -c
 	fi
 	cd ~/$script_dir
 }
 
 function clean() {
 	cd ~/$rom_dir
-	. build/envsetup.sh && make clean && make clobber
-	cd ~/$script_dir
+
+	#Make a clean
+	. build/envsetup.sh
+	make clean
+	make clobber
+	#
+
+	#Clear CCache if enabled
 	if [ "$use_ccache" = "1" ]; then
-	echo "Cleaning ccache.."
-	export CCACHE_DIR=/home/$username/.ccache
-	ccache -C
-	wait
-	echo "CCACHE Cleared"
+		echo "Cleaning ccache.."
+		export CCACHE_DIR=/home/$username/.ccache
+		ccache -C
+		wait
+		echo "CCACHE Cleared"
 	fi
+
+	cd ~/$script_dir
 }
 
 function installclean() {
 	cd ~/$rom_dir
-	. build/envsetup.sh && make installclean
+
+	. build/envsetup.sh
+	make installclean
+
 	cd ~/$script_dir
 }
 
 function build_rom() {
 	. build/envsetup.sh
-	lunch "$rom_name"_"$device_codename"-$buildtype
-	if [ "$rom_name" = "aosip" ]; then
+	lunch "$rom_name"_"$device_codename"-$buildtype #TODO: auto detect current build system, many roms based on lineage, so its not working for it
+	if [ "$rom_name" = "aosip" ]; then #Crutch for now
 		time mka kronic
 	else
 		brunch $device_codename
@@ -326,13 +300,17 @@ function build_rom() {
 
 function build() {
 	cd ~/$rom_dir
-	if [ "$use_ccache" = "1" ]; then
-	echo "Setupping ccache..."
-	export USE_CCACHE=1
-	export CCACHE_DIR=/home/$username/.ccache
-	ccache -M 35G
-	fi
 
+	#Enable CCache
+	if [ "$use_ccache" = "1" ]; then
+		echo "Setupping ccache..."
+		export USE_CCACHE=1
+		export CCACHE_DIR=/home/$username/.ccache
+		ccache -M 35G
+	fi
+	#
+
+	#TODO: move logs, uploading to own functions
 	mkdir -p '_logs'
 	BUILD_START=$(date +"%s")
 	DATE=`date`
@@ -363,7 +341,7 @@ function build() {
 	done
 	BUILD_END=$(date +"%s")
 	DIFF=$(($BUILD_END - $BUILD_START))
-	if [ "$result" = "0" ];
+	if [ "$result" = "0" ]; #This stuff only for show compilation successfully, I do not see the point in this.
 	then
 		echo -e "\n${GREEN}(i)ROM compilation completed successfully"
 		echo -e "#######################################################################"
@@ -379,6 +357,7 @@ function build() {
 }
 
 function cloud_setup() {
+	#TODO: if we change script we recive blank mega settings? No, its not right!
 	echo -ne "\n${BLUE}Please write your mega email: ${NC}"
 	read megaemail
 	echo -ne "\n${BLUE}Please write your mega password: ${NC}"
@@ -404,6 +383,7 @@ if [ -n "$1" ];then
 			--help | -h) help ;;
 			--setup) setup ;;
 			--init) init ;;
+			settings_info) settings_info;;
 			--sync | -s)
 			if [[ "$2" = "-force" || "$2" = "-f" ]];then
 				FORCE_SYNC=1
@@ -428,8 +408,7 @@ while :; do
 		4 ) sync;;
 		5 ) misc;;
 		6 ) cloud_setup;;
-		7 ) change_space;;
-		8 ) settings_info;;
+		7 ) settings_info;;
 		Q ) exit 0;;
 	esac
 done
