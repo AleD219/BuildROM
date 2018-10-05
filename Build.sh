@@ -31,15 +31,6 @@ fi
 
 #Some system functions
 
-function restart() {
-	if [ "$Z" = "1" ]; then
-		clear
-		bash ~/$script_dir/$script_file settings_info
-	fi
-
-	bash ~/$script_dir/$script_file
-}
-
 function settings() {
 	echo "Script settings"
 	echo -ne "${BLUE}Please your device codename: ${NC}"
@@ -91,11 +82,9 @@ function settings() {
 		echo "repo_init=\"$repo_init\"" >> ~/$script_dir/${curr_conf}
 		echo "use_ccache=$use_ccache" >> ~/$script_dir/${curr_conf}
 		echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/${curr_conf}
-		echo "Settings saved, please reopen script"
-		exit
+		echo "Settings saved!"
 	else
 		echo "Settings don't changed!"
-		restart
 	fi
 }
 
@@ -195,6 +184,7 @@ function setup() {
 }
 
 function settings_info() {
+while :; do
 
 	echo -e "${BLUE}Change script config"
 	echo -e "${CYAN}Current config: ${rom_name}${GREEN}"
@@ -231,25 +221,17 @@ function settings_info() {
 	echo -e "${CYAN}Q - for go back | S - for setting current config | [1/~] For change config file" #TODO: Simplify this text
 	echo -ne "${BLUE}Your command: ${NC}"
 	read curr_cmd
+	
+	case "$curr_cmd" in
+		S | s ) settings ;;
+		Q | q ) break ;;
+	esac
 
-	if [ "$curr_cmd" = "S" ] || [ "$change_setings" = "s" ]; then
-		settings
+	if [[ $curr_cmd =~ $re && $curr_cmd -gt 0 && $curr_cmd -le $N ]] ; then
+		echo "curr_conf=\"configs/conf$curr_cmd.txt\"" >> ~/$script_dir/script_conf.txt
+		. ~/$script_dir/script_conf.txt
 	fi
-
-	if [ "$curr_cmd" = "Q" ] || [ "$change_setings" = "q" ]; then
-		restart
-	fi
-
-	if [[ $curr_cmd =~ $re ]] ; then
-		#Make a sed on Build.sh for change curr_conf variable
-		#Magic! Don't touch!
-		sed -i -e "s/curr_conf=\".*\"/curr_conf=\"configs\/conf$curr_cmd.txt\"/" -l 10 Build.sh
-		Z="1"
-		echo $Z
-		restart
-	fi
-
-	exit
+done
 }
 
 function init() {
