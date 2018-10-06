@@ -346,6 +346,13 @@ function build() {
 		echo -e "#######################################################################"
 		echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		echo -e "#######################################################################${NC}"
+		if [ "$uselogs" = "true" ]; then
+			echo -ne "\nDo you want to upload logs to paste.ubuntu.com? [Y/n]:"
+			read curr_cmd
+			if [ "$curr_cmd" = "y" ] || [ "$curr_cmd" = "Y" ]; then
+				upload_logs
+			fi
+		fi
 	fi
 	cd ~/$script_dir
 }
