@@ -7,9 +7,6 @@ export LC_ALL=C #Magic patch for Ubuntu 18.04
 script_dir="BuildROM"
 script_file="Build.sh"
 script_ver="R0.7"
-username="$USER"
-
-curr_conf="configs/conf4.txt"
 #
 
 # Add colors variables
@@ -102,6 +99,21 @@ function settings() {
 	fi
 }
 
+#Script config
+if [ ! -e ~/$script_dir/script_conf.txt ];then
+  echo -e "Creating script_conf.txt..."
+  echo "curr_conf=\"configs/conf1.txt\"" > ~/$script_dir/script_conf.txt
+fi
+
+. ~/$script_dir/script_conf.txt
+
+if [ -z ${curr_conf} ];then
+  echo -e "\n${PURPLE}WARNING:${NC} variable curr_conf is empty. Set current config to configs/conf1.txt"
+  echo "curr_conf=\"configs/conf1.txt\"" >> ~/$script_dir/script_conf.txt
+  curr_conf="configs/conf1.txt"
+fi
+
+#We check conf file
 if [ ! -e ~/$script_dir/${curr_conf} ];then
 	echo -e "${BLUE}No configuration file, please setup${NC}"
 
