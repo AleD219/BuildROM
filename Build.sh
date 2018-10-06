@@ -366,8 +366,8 @@ function cloud_setup() {
 	read megapass
 	echo "megaemail=$megaemail" >> ~/$script_dir/${curr_conf}
 	echo "megapass=$megapass" >> ~/$script_dir/${curr_conf}
-	echo -ne "\n${BLUE}now the full build will upload the file on mega.nz! Restart the script.${NC}"
-	exit
+	echo -ne "\n${BLUE}now the full build will upload the file on mega.nz!${NC}"
+	. ~/$script_dir/${curr_conf}
 }
 
 function delfwb() {
