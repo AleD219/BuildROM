@@ -138,7 +138,7 @@ function edit_script_settings() {
 	fi
 }
 
-function settings_info() {
+function show_config_settings() {
 while :; do
 
 	echo -e "${BLUE}Change script config"
@@ -178,7 +178,7 @@ while :; do
 	read curr_cmd
 	
 	case "$curr_cmd" in
-		S | s ) settings ;;
+		S | s ) edit_config_settings ;;
 		Q | q ) break ;;
 	esac
 
@@ -189,7 +189,7 @@ while :; do
 done
 }
 
-function settings() {
+function edit_config_settings() {
 	echo "Config settings"
 	echo -ne "${BLUE}Please your device codename: ${NC}"
 	read device_codename
@@ -434,7 +434,7 @@ if [ ! -e ~/$script_dir/${curr_conf} ];then
 	
 	#Create new conf file and setup it
 	touch ~/$script_dir/${curr_conf}
-	settings
+	edit_config_settings
 fi
 
 #Import variables from current config file
@@ -449,7 +449,6 @@ if [ -n "$1" ];then
 			--help | -h) help ;;
 			--setup) setup ;;
 			--init) init ;;
-			settings_info) settings_info;;
 			--sync | -s)
 			if [[ "$2" = "-force" || "$2" = "-f" ]];then
 				FORCE_SYNC=1
@@ -474,7 +473,7 @@ while :; do
 		4 ) sync;;
 		5 ) misc;;
 		6 ) mega_setup;;
-		7 ) settings_info;;
+		7 ) show_config_settings;;
 		8 ) show_script_settings;;
 		Q ) exit 0;;
 	esac
