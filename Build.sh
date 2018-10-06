@@ -201,6 +201,8 @@ function edit_config_settings() {
 	read version
 	echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
 	read buildtype
+	echo -ne "${BLUE}Are you building official or unofficial?${NC}"
+	read official
 	echo -ne "${BLUE}Please write command to init sources: ${NC}"
 	read repo_init
 	echo -ne "${BLUE}Do you want to use ccache? [Y/n]: ${NC}"
@@ -220,6 +222,7 @@ function edit_config_settings() {
 	echo -e "${BLUE}Rom path - ${NC}$rom_dir"
 	echo -e "${BLUE}Version - ${NC}$version"
 	echo -e "${BLUE}Build Type - ${NC}$buildtype"
+	echo -e "${BLUE}Official? - ${NC}$official"
 	echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
 	echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
 
@@ -233,6 +236,7 @@ function edit_config_settings() {
 		echo "rom_dir=$rom_dir" >> ~/$script_dir/${curr_conf}
 		echo "version=$version" >> ~/$script_dir/${curr_conf}
 		echo "buildtype=$buildtype" >> ~/$script_dir/${curr_conf}
+		echo "official=$official" >> ~/$script_dir/${curr_conf}
 		echo "repo_init=\"$repo_init\"" >> ~/$script_dir/${curr_conf}
 		echo "use_ccache=$use_ccache" >> ~/$script_dir/${curr_conf}
 		echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/${curr_conf}
