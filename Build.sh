@@ -29,97 +29,7 @@ if [ ! -e ~/$script_dir/$script_file ];then
 	exit
 fi
 
-#Some system functions
-
-function settings() {
-	echo "Config settings"
-	echo -ne "${BLUE}Please your device codename: ${NC}"
-	read device_codename
-	echo -ne "${BLUE}Please write ROM name: ${NC}"
-	read rom_name
-	echo -ne "${BLUE}Please write path to ROM dir:${NC} ~/"
-	read rom_dir
-	echo -ne "${BLUE}Please write your rom version: ${NC}"
-	read version
-	echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
-	read buildtype
-	echo -ne "${BLUE}Are you building official or unofficial?${NC}"
-  	read official
-	echo -ne "${BLUE}Please write command to init sources: ${NC}"
-	read repo_init
-	echo -ne "${BLUE}Do you want to use ccache? [Y/n]: ${NC}"
-	read use_ccache
-
-	if [ "$use_ccache" = "y" ] || [ "$use_ccache" = "Y" ]; then
-		use_ccache="1"
-		use_ccacheP="Yes"
-	else
-		use_ccache="0"
-		use_ccacheP="No"
-	fi
-	
-	echo -e "${CYAN}Ok, done, please review your settings:${NC}"
-	echo -e "${BLUE}Device Codename - ${NC}$device_codename"
-	echo -e "${BLUE}Rom name - ${NC}$rom_name"
-	echo -e "${BLUE}Rom path - ${NC}$rom_dir"
-	echo -e "${BLUE}Version - ${NC}$version"
-	echo -e "${BLUE}Build Type - ${NC}$buildtype"
-	echo -e "${BLUE}Official? - ${NC}$official"
-	echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
-	echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
-
-
-	echo -ne "${BLUE}Save changes? [y/N]: ${NC}"
-	read save
-	if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
-		echo "Saving settings..."
-		echo "device_codename=$device_codename" > ~/$script_dir/${curr_conf}
-		echo "rom_name=$rom_name" >> ~/$script_dir/${curr_conf}
-		echo "rom_dir=$rom_dir" >> ~/$script_dir/${curr_conf}
-		echo "version=$version" >> ~/$script_dir/${curr_conf}
-		echo "buildtype=$buildtype" >> ~/$script_dir/${curr_conf}
-		echo "official=$official" >> ~/$script_dir/${curr_conf}
-		echo "repo_init=\"$repo_init\"" >> ~/$script_dir/${curr_conf}
-		echo "use_ccache=$use_ccache" >> ~/$script_dir/${curr_conf}
-		echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/${curr_conf}
-		echo "Settings saved!"
-	else
-		echo "Settings don't changed!"
-		. ~/$script_dir/${curr_conf}
-	fi
-}
-
-#Script config
-if [ ! -e ~/$script_dir/script_conf.txt ];then
-  echo -e "Creating script_conf.txt..."
-  echo "curr_conf=\"configs/conf1.txt\"" > ~/$script_dir/script_conf.txt
-fi
-
-. ~/$script_dir/script_conf.txt
-
-if [ -z ${curr_conf} ];then
-  echo -e "\n${PURPLE}WARNING:${NC} variable curr_conf is empty. Set current config to configs/conf1.txt"
-  echo "curr_conf=\"configs/conf1.txt\"" >> ~/$script_dir/script_conf.txt
-  curr_conf="configs/conf1.txt"
-fi
-
-#We check conf file
-if [ ! -e ~/$script_dir/${curr_conf} ];then
-	echo -e "${BLUE}No configuration file, please setup${NC}"
-
-	if [ ! -e ~/$script_dir/configs/ ];then
-	mkdir ~/$script_dir/configs/
-	fi
-
-	touch ~/$script_dir/${curr_conf}
-	settings
-fi
-
-#Import variables from current config file
-. ~/$script_dir/${curr_conf}
-#
-
-# Other functions
+# Main functions
 function start() {
 	echo -e "\n${BLUE}BuildROM script ${CYAN}$script_ver${BLUE} | By MrYacha, Timur and AleD219"
 	echo -e "${CYAN}Current ROM - $rom_name"
@@ -277,6 +187,60 @@ while :; do
 		. ~/$script_dir/script_conf.txt
 	fi
 done
+}
+
+function settings() {
+	echo "Config settings"
+	echo -ne "${BLUE}Please your device codename: ${NC}"
+	read device_codename
+	echo -ne "${BLUE}Please write ROM name: ${NC}"
+	read rom_name
+	echo -ne "${BLUE}Please write path to ROM dir:${NC} ~/"
+	read rom_dir
+	echo -ne "${BLUE}Please write your rom version: ${NC}"
+	read version
+	echo -ne "${BLUE}Please write the type of build that you want (eng; user; userdebug): ${NC}"
+	read buildtype
+	echo -ne "${BLUE}Please write command to init sources: ${NC}"
+	read repo_init
+	echo -ne "${BLUE}Do you want to use ccache? [Y/n]: ${NC}"
+	read use_ccache
+
+	if [ "$use_ccache" = "y" ] || [ "$use_ccache" = "Y" ]; then
+		use_ccache="1"
+		use_ccacheP="Yes"
+	else
+		use_ccache="0"
+		use_ccacheP="No"
+	fi
+	
+	echo -e "${CYAN}Ok, done, please review your settings:${NC}"
+	echo -e "${BLUE}Device Codename - ${NC}$device_codename"
+	echo -e "${BLUE}Rom name - ${NC}$rom_name"
+	echo -e "${BLUE}Rom path - ${NC}$rom_dir"
+	echo -e "${BLUE}Version - ${NC}$version"
+	echo -e "${BLUE}Build Type - ${NC}$buildtype"
+	echo -e "${BLUE}Init ROM sources command - ${NC}$repo_init"
+	echo -e "${BLUE}Use ccache - ${NC}$use_ccacheP"
+
+
+	echo -ne "${BLUE}Save changes? [y/N]: ${NC}"
+	read save
+	if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
+		echo "Saving settings..."
+		echo "device_codename=$device_codename" > ~/$script_dir/${curr_conf}
+		echo "rom_name=$rom_name" >> ~/$script_dir/${curr_conf}
+		echo "rom_dir=$rom_dir" >> ~/$script_dir/${curr_conf}
+		echo "version=$version" >> ~/$script_dir/${curr_conf}
+		echo "buildtype=$buildtype" >> ~/$script_dir/${curr_conf}
+		echo "repo_init=\"$repo_init\"" >> ~/$script_dir/${curr_conf}
+		echo "use_ccache=$use_ccache" >> ~/$script_dir/${curr_conf}
+		echo "use_ccacheP=$use_ccacheP" >> ~/$script_dir/${curr_conf}
+		echo "Settings saved!"
+	else
+		echo "Settings don't changed!"
+		. ~/$script_dir/${curr_conf}
+	fi
 }
 
 function init() {
@@ -444,6 +408,37 @@ function upload_logs() {
 	echo -n "Done, pastebin link: "
 	cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
 }
+#
+
+#Script config
+if [ ! -e ~/$script_dir/script_conf.txt ];then
+	echo -e "Creating script_conf.txt..."
+	echo "curr_conf=\"configs/conf1.txt\"" > ~/$script_dir/script_conf.txt
+fi
+
+. ~/$script_dir/script_conf.txt
+
+if [ -z ${curr_conf} ];then
+	echo -e "\n${PURPLE}WARNING:${NC} variable curr_conf is empty. Set current config to configs/conf1.txt"
+	echo "curr_conf=\"configs/conf1.txt\"" >> ~/$script_dir/script_conf.txt
+	curr_conf="configs/conf1.txt"
+fi
+
+#We check conf file
+if [ ! -e ~/$script_dir/${curr_conf} ];then
+	echo -e "${BLUE}No configuration file, please setup${NC}"
+
+	if [ ! -e ~/$script_dir/configs/ ];then
+	mkdir ~/$script_dir/configs/
+	fi
+	
+	#Create new conf file and setup it
+	touch ~/$script_dir/${curr_conf}
+	settings
+fi
+
+#Import variables from current config file
+. ~/$script_dir/${curr_conf}
 #
 
 if [ -n "$1" ];then
