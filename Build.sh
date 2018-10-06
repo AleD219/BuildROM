@@ -85,6 +85,7 @@ function settings() {
 		echo "Settings saved!"
 	else
 		echo "Settings don't changed!"
+		. ~/$script_dir/${curr_conf}
 	fi
 }
 
