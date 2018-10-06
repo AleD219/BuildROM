@@ -341,6 +341,11 @@ function build() {
 		echo -e "#######################################################################"
 		echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		echo -e "#######################################################################${NC}"
+		echo -ne "\nDo you want to upload ROM to mega.nz? [Y/n]:"
+		read curr_cmd
+		if [ "$curr_cmd" = "y" ] || [ "$curr_cmd" = "Y" ]; then
+			mega_upload
+		fi
 	else
 		echo -e "\n${RED}(!)ROM compilation failed"
 		echo -e "#######################################################################"
