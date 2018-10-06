@@ -324,12 +324,6 @@ function build() {
 	fi
 	result=$(cat ~/$script_dir/tmp)
 	rm -f ~/$script_dir/tmp
-	echo -e ${cya}"Uploading to mega.nz"
-	mega-login "$megaemail" "$megapass"
-	mega-put out/target/product/"$device_codename"/*.zip /"$device_codename"_builds/"$rom_name"/
-	mega-logout
-	wait
-	echo -e ${grn}"Uploaded file successfully"
 	echo -ne "\n${BLUE}[...] ${spin[0]}${NC}"
 	while kill -0 $pid &>/dev/null
 	do
@@ -366,6 +360,15 @@ function mega_setup() {
 	echo "megapass=$megapass" >> ~/$script_dir/script_conf.txt
 	echo -ne "\n${BLUE}now the full build will upload the file on mega.nz!${NC}"
 	. ~/$script_dir/script_conf.txt
+}
+
+function mega_upload() {
+	echo -e ${cya}"Uploading to mega.nz"
+	mega-login "$megaemail" "$megapass"
+	mega-put out/target/product/"$device_codename"/*.zip /"$device_codename"_builds/"$rom_name"/
+	mega-logout
+	wait
+	echo -e ${grn}"Uploaded file successfully"
 }
 
 function delfwb() {
