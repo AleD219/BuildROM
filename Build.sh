@@ -295,7 +295,7 @@ function build_rom() {
 		brunch $device_codename
 	fi
 	result="$?"
-	return $result
+	echo $result > ~/$script_dir/tmp
 }
 
 function build() {
@@ -317,10 +317,11 @@ function build() {
 	echo -e "\n${CYAN}#######################################################################${NC}"
 	echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
 	export SELINUX_IGNORE_NEVERALLOWS=true
-	. build/envsetup.sh
 	export "${rom_name^^}"_BUILD_TYPE="${official^^}"
 	LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
-	build_rom && result="$?" | tee "$LOG_FILE"
+	build_rom | tee "$LOG_FILE"
+	result=$(cat ~/$script_dir/tmp)
+	rm -f ~/$script_dir/tmp
 	echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
 	echo "uploading to pastebin.."
 	echo -n "Done, pastebin link: "
