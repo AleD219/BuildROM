@@ -260,10 +260,10 @@ function sync() {
 	echo -e "\n${BLUE}(i)Syncing $rom_name repo...${NC}"
 	if [ "$FORCE_SYNC" = 1 ]; then
 		echo "Force sync!"
-		repo sync -f -c --force-sync
+		repo sync -f -c --force-sync --no-clone-bundle --no-tags
 	else
 		echo "Normal sync"
-		repo sync -f -c
+		repo sync -f -c --no-clone-bundle --no-tags
 	fi
 	cd ~/$script_dir
 }
