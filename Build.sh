@@ -324,9 +324,6 @@ function build() {
 	fi
 	result=$(cat ~/$script_dir/tmp)
 	rm -f ~/$script_dir/tmp
-	echo "uploading to pastebin.."
-	echo -n "Done, pastebin link: "
-	cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
 	echo -e ${cya}"Uploading to mega.nz"
 	mega-login "$megaemail" "$megapass"
 	mega-put out/target/product/"$device_codename"/*.zip /"$device_codename"_builds/"$rom_name"/
@@ -381,6 +378,12 @@ function use_logs() {
 	LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
 	build_rom | tee "$LOG_FILE"
 	echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
+}
+
+function upload_logs() {
+	echo "uploading to pastebin.."
+	echo -n "Done, pastebin link: "
+	cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
 }
 #
 
