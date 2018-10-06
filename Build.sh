@@ -356,16 +356,16 @@ function build() {
 	cd ~/$script_dir
 }
 
-function cloud_setup() {
+function mega_setup() {
 	#TODO: if we change script we recive blank mega settings? No, its not right!
 	echo -ne "\n${BLUE}Please write your mega email: ${NC}"
 	read megaemail
 	echo -ne "\n${BLUE}Please write your mega password: ${NC}"
 	read megapass
-	echo "megaemail=$megaemail" >> ~/$script_dir/${curr_conf}
-	echo "megapass=$megapass" >> ~/$script_dir/${curr_conf}
+	echo "megaemail=$megaemail" >> ~/$script_dir/script_conf.txt
+	echo "megapass=$megapass" >> ~/$script_dir/script_conf.txt
 	echo -ne "\n${BLUE}now the full build will upload the file on mega.nz!${NC}"
-	. ~/$script_dir/${curr_conf}
+	. ~/$script_dir/script_conf.txt
 }
 
 function delfwb() {
@@ -419,7 +419,7 @@ while :; do
 		3 ) installclean;;
 		4 ) sync;;
 		5 ) misc;;
-		6 ) cloud_setup;;
+		6 ) mega_setup;;
 		7 ) settings_info;;
 		Q ) exit 0;;
 	esac
