@@ -311,18 +311,19 @@ function build() {
 	#
 
 	#TODO: move logs, uploading to own functions
-	mkdir -p '_logs'
 	BUILD_START=$(date +"%s")
 	DATE=`date`
 	echo -e "\n${CYAN}#######################################################################${NC}"
 	echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
 	export SELINUX_IGNORE_NEVERALLOWS=true
 	export "${rom_name^^}"_BUILD_TYPE="${official^^}"
-	LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
-	build_rom | tee "$LOG_FILE"
+	if [ "$uselogs" = "true" ]; then
+		use_logs
+	else
+		build_rom
+	fi
 	result=$(cat ~/$script_dir/tmp)
 	rm -f ~/$script_dir/tmp
-	echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
 	echo "uploading to pastebin.."
 	echo -n "Done, pastebin link: "
 	cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
@@ -375,6 +376,12 @@ function delfwb() {
 	echo "FWB Deleted!"
 }
 
+function use_logs() {
+	mkdir -p _logs
+	LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
+	build_rom | tee "$LOG_FILE"
+	echo -e "${BLUE}(i)Log writed in $LOG_FILE${NC}"
+}
 #
 
 if [ -n "$1" ];then
