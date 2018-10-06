@@ -354,7 +354,6 @@ function build() {
 	fi
 	#
 
-	#TODO: move logs, uploading to own functions
 	BUILD_START=$(date +"%s")
 	DATE=`date`
 	echo -e "\n${CYAN}#######################################################################${NC}"
@@ -379,7 +378,7 @@ function build() {
 	done
 	BUILD_END=$(date +"%s")
 	DIFF=$(($BUILD_END - $BUILD_START))
-	if [ "$result" = "0" ]; #This stuff only for show compilation successfully, I do not see the point in this.
+	if [ "$result" = "0" ];
 	then
 		echo -e "\n${GREEN}(i)ROM compilation completed successfully"
 		echo -e "#######################################################################"
