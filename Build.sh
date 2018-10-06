@@ -384,7 +384,7 @@ function mega_setup() {
 function mega_upload() {
 	echo -e ${cya}"Uploading to mega.nz"
 	mega-login "$megaemail" "$megapass"
-	mega-put out/target/product/"$device_codename"/*.zip /"$device_codename"_builds/"$rom_name"/
+	mega-put out/target/product/"$device_codename"/"$rom_name"_"$device"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
 	mega-logout
 	wait
 	echo -e ${grn}"Uploaded file successfully"
