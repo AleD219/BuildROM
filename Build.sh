@@ -32,7 +32,7 @@ fi
 #Some system functions
 
 function settings() {
-	echo "Script settings"
+	echo "Config settings"
 	echo -ne "${BLUE}Please your device codename: ${NC}"
 	read device_codename
 	echo -ne "${BLUE}Please write ROM name: ${NC}"
@@ -129,7 +129,8 @@ function start() {
 	echo -e "[4] Sync repo"
 	echo -e "[5] Misc"
 	echo -e "[6] Mega Setup"
-	echo -e "[7] Settings"
+	echo -e "[7] Settings (config)"
+	echo -e "[8] Script settings"
 	echo -e "[Q] Quit"
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-8/Q]:${NC} "
 
@@ -181,6 +182,49 @@ function setup() {
 	sudo bash setup/install_android_sdk.bash
 	cd ~/$script_dir
 	rm -rf ~/scripts
+}
+
+function show_script_settings() {
+	while :; do
+		echo
+		echo -e "${BLUE}Current script settings: ${NC}"
+		echo
+		echo -e "${GREEN}Use logs - ${NC}${use_logs}"
+		echo
+		echo -e "${BLUE}Commands avaible: ${NC}"
+		echo -e "${CYAN}[Q] - for go back \n[S] - for changing current settings"
+		echo -ne "${BLUE}Your command: ${NC}"
+		read curr_cmd
+
+		case "$curr_cmd" in
+			S | s ) edit_script_settings ;;
+			Q | q ) break ;;
+		esac
+	done
+}
+
+function edit_script_settings() {
+	echo "Script settings"
+	echo -ne "${BLUE}Do you want to use logs? [Y/n]: ${NC}"
+	read use_logs
+	if [ "$use_logs" = "y" ] || [ "$use_logs" = "Y" ]; then
+		use_logs="true"
+	else
+		use_logs="false"
+	fi
+	echo -e "${CYAN}Ok, done, please review your settings:${NC}"
+	echo -e "${BLUE}Use logs - ${NC}$use_logs"
+	echo
+	echo -ne "${BLUE}Save changes? [y/N]: ${NC}"
+	read save
+	if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
+		echo "Saving settings..."
+		echo "use_logs"="$use_logs" > ~/$script_dir/script_conf.txt
+		echo "Settings saved!"
+	else
+		echo "Settings don't changed!"
+		. ~/$script_dir/script_conf.txt
+	fi
 }
 
 function settings_info() {
@@ -436,6 +480,7 @@ while :; do
 		5 ) misc;;
 		6 ) mega_setup;;
 		7 ) settings_info;;
+		8 ) show_script_settings;;
 		Q ) exit 0;;
 	esac
 done
