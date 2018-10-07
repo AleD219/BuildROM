@@ -44,9 +44,10 @@ function start() {
 	echo -e "[4] Sync repo"
 	echo -e "[5] Misc"
 	echo -e "[6] Mega Setup"
-	echo -e "[7] Settings (config)"
-	echo -e "[8] Script settings"
-	echo -e "[9] TG Bot menu"
+	echo -e "[7] SourceForge Setup"
+	echo -e "[8] Settings (config)"
+	echo -e "[9] Script settings"
+	echo -e "[10] TG Bot menu"
 	echo -e "[Q] Quit"
 	echo -ne "\n${BLUE}(i)Please enter a choice[1-9/Q]:${NC} "
 
@@ -313,7 +314,7 @@ while :; do
 	echo -e "${GREEN}Rom path - ${NC}$rom_dir"
 	echo -e "${GREEN}Version - ${NC}$version"
 	echo -e "${GREEN}Build type - ${NC}$buildtype"
-	echo -e "${CYAN}Official? - ${NC}$official"
+	echo -e "${GREEN}Official? - ${NC}$official"
 	echo -e "${GREEN}Init ROM sources command - ${NC}$repo_init"
 	echo -e "${GREEN}Use ccache - ${NC}$use_ccacheP"
 	echo
@@ -537,11 +538,30 @@ function mega_setup() {
 	. ~/$script_dir/script_conf.txt
 }
 
+function sf_setup() {
+	echo -ne "\n${BLUE}Please write your SourceForge username: ${NC}"
+	read sfuser
+	echo -ne "\n${BLUE}Please write your SourceForge password: ${NC}"
+	read sfpass
+	echo -ne "\n${BLUE}Please write your SourceForge Project name: ${NC}"
+	read sfproject
+	echo "sfproject=$sfproject" >> ~/$script_dir/${curr_conf}
+	echo "sfuser=$sfuser" >> ~/$script_dir/script_conf.txt
+	echo "sfpass=$sfpass" >> ~/$script_dir/script_conf.txt
+}
+
 function mega_upload() {
 	echo -e ${cya}"Uploading to mega.nz"
 	mega-login "$megaemail" "$megapass"
-	mega-put out/target/product/"$device_codename"/"$rom_name"_"$device"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
+	mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
 	mega-logout
+	wait
+	echo -e ${grn}"Uploaded file successfully"
+}
+
+function sf_upload() {
+	echo -e ${cya}"Uploading to SourceForge"
+	sshpass -p "$sfpass" scp out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip "$sfuser"@frs.sourceforge.net:/home/frs/project/"$sfproject"/"$device_codename"
 	wait
 	echo -e ${grn}"Uploaded file successfully"
 }
@@ -629,6 +649,7 @@ if [ -n "$1" ];then
 			--clean | -c) clean ;;
 			--installclean | -ic) installclean ;;
 			--mega | -m ) mega_upload ;;
+			--sourceforge | -sf ) sf_upload ;;
 			--build | -b) build ;;
 		esac
 		shift
@@ -645,9 +666,10 @@ while :; do
 		4 ) sync;;
 		5 ) misc;;
 		6 ) mega_setup;;
-		7 ) show_config_settings;;
-		8 ) show_script_settings;;
-		9 ) tgbot_menu;;
+		7 ) sf_setup;;
+		8 ) show_config_settings;;
+		9 ) show_script_settings;;
+		10 ) tgbot_menu;;
 		Q ) exit 0;;
 	esac
 done
