@@ -3,3 +3,5 @@ configs/
 .directory
 
 script_conf\.txt
+
+tgbot_conf\.txt

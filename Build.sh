@@ -11,16 +11,7 @@ script_ver="R0.7"
 
 #TGBot variables
 tgbot_path="/home/$USER/BuildROM/TGBot"
-tg_user_id="000"
 #
-
-#Start TGBot | Currently beta
-TG_enb="0"
-if [ "$TG_enb" = "1" ]; then
-	cd $tgbot_path
-	source $tgbot_path/bashbot.sh source
-	bash $tgbot_path/bashbot.sh start
-fi
 
 # Add colors variables
 RED='\033[0;31m'
@@ -55,8 +46,9 @@ function start() {
 	echo -e "[6] Mega Setup"
 	echo -e "[7] Settings (config)"
 	echo -e "[8] Script settings"
+	echo -e "[9] TG Bot menu"
 	echo -e "[Q] Quit"
-	echo -ne "\n${BLUE}(i)Please enter a choice[1-8/Q]:${NC} "
+	echo -ne "\n${BLUE}(i)Please enter a choice[1-9/Q]:${NC} "
 
 	read choice
 }
@@ -78,6 +70,132 @@ function misc() {
 			Q ) break
 		esac
 	done
+}
+
+function tgbot_menu() {
+	while :; do
+		echo -e "${BLUE}Telegram bot menu${NC}"
+		echo -e 
+		echo -e "${GREEN}[1] Start"
+		echo -e "[2] Kill"
+		echo -e "[3] Settings"
+		echo -e "[4] Current proxy - ${NC}${curr_proxy}"
+		echo -e "${GREEN}[5] Use proxy - ${NC}${use_proxy}"
+		echo
+		echo -ne "${BLUE}(i)Please enter a choice[1-5/Q]:${NC} "
+
+		read choice
+
+		case $choice in
+			1 ) tgbot_start;;
+			2 ) tgbot_kill;;
+			3 ) show_tgbot_settings;;
+			4 ) proxy_edit;;
+			5 ) if [ $use_proxy = "true" ];then
+					use_proxy="false"
+				else
+					use_proxy="true"
+				fi
+				echo "use_proxy=$use_proxy" >> ~/$script_dir/tgbot_conf.txt;;
+			6 | Q | q ) break
+		esac
+	done
+}
+
+function tgbot_start() {
+	proxy_set
+	cd $tgbot_path
+	source $tgbot_path/bashbot.sh source
+	bash $tgbot_path/bashbot.sh start && use_tgbot="true"
+	cd ~/$script_dir
+	proxy_unset
+}
+
+function tgbot_kill() {
+	proxy_set
+	cd $tgbot_path
+	bash $tgbot_path/bashbot.sh kill && use_tgbot="false"
+	cd ~/$script_dir
+	proxy_unset
+}
+
+function show_tgbot_settings() {
+	while :; do
+		echo
+		echo -e "${BLUE}Current TG Bot settings: ${NC}"
+		echo
+		echo -e "${GREEN}User ID - ${NC}${tg_user_id}"
+		echo -e "${GREEN}Run bot on script start-up - ${NC}${tgbot_autostart}"
+		echo
+		echo -e "${BLUE}Commands avaible: ${NC}"
+		echo -e "${CYAN}[Q] - for go back \n[S] - for changing current settings"
+		echo -ne "${BLUE}Your command: ${NC}"
+		read curr_cmd
+
+		case "$curr_cmd" in
+			S | s ) edit_tgbot_settings ;;
+			Q | q ) break ;;
+		esac
+	done
+}
+
+function edit_tgbot_settings() {
+	echo "TG Bot settings"
+	echo
+	echo -ne "${BLUE}Enter your user ID: ${NC}"
+	read tg_user_id
+	echo -ne "${BLUE}Do you want to run bot on script start-up? [Y/n]: ${NC}"
+	read tgbot_autostart
+	if [ "$tgbot_autostart" = "y" ] || [ "$tgbot_autostart" = "Y" ]; then
+		tgbot_autostart="true"
+	else
+		tgbot_autostart="false"
+	fi
+	echo -e "${CYAN}Ok, done, please review your settings:${NC}"
+	echo
+	echo -e "${BLUE}User ID - ${NC}${tg_user_id}"
+	echo -e "${BLUE}Run bot on script start-up - ${NC}${tgbot_autostart}"
+	echo
+	echo -ne "${BLUE}Save changes? [y/N]: ${NC}"
+	read save
+	if [ "$save" = "y" ] || [ "$save" = "Y" ]; then
+		echo "Saving settings..."
+		echo "tg_user_id=$tg_user_id" >> ~/$script_dir/tgbot_conf.txt
+		echo "tgbot_autostart=$tgbot_autostart" >> ~/$script_dir/tgbot_conf.txt
+		echo "Settings saved!"
+	else
+		echo "Settings don't changed!"
+		. ~/$script_dir/tgbot_conf.txt
+	fi
+}
+
+function proxy_edit() {
+	echo
+	echo -ne "${BLUE}Enter new proxy: ${NC}"
+	read curr_proxy
+	echo "curr_proxy=\"$curr_proxy\"" >> ~/$script_dir/tgbot_conf.txt
+	echo
+}
+
+function proxy_set() {
+	if [ "$use_proxy" = "true" ];then
+		export {http,https,ftp}_proxy="$curr_proxy"
+	fi
+}
+
+function proxy_unset() {
+	if [ "$use_proxy" = "true" ];then
+		unset {http,https,ftp}_proxy
+	fi
+}
+
+function send_tg_notification() {
+	if [ "$use_tgbot" = "true" ]; then
+		proxy_set
+		cd $tgbot_path
+		send_text ${tg_user_id} "markdown_parse_mode${tg_msg}" 
+		proxy_unset
+	fi
 }
 
 function help() {
@@ -106,13 +224,6 @@ function setup() {
 	sudo bash setup/install_android_sdk.bash
 	cd ~/$script_dir
 	rm -rf ~/scripts
-}
-
-function send_tg_notification() {
-	if [ "$TG_enb" = "1" ]; then
-		cd $tgbot_path
-		send_text ${tg_user_id} "markdown_parse_mode${tg_msg}" 
-	fi
 }
 
 function show_script_settings() {
@@ -397,7 +508,7 @@ function build() {
 		echo -e "#######################################################################"
 		echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		echo -e "#######################################################################${NC}"
-			tg_msg="*(!)ROM compilation failed* | Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+		tg_msg="*(!)ROM compilation failed* | Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		if [ "$uselogs" = "true" ]; then
 			echo -ne "\nDo you want to upload logs to paste.ubuntu.com? [Y/n]:"
 			read curr_cmd
@@ -450,6 +561,15 @@ function upload_logs() {
 }
 #
 
+#TG Bot config
+if [ ! -e ~/$script_dir/tgbot_conf.txt ];then
+	echo -e "Creating tgbot_conf.txt..."
+	touch ~/$script_dir/tgbot_conf.txt
+fi
+
+. ~/$script_dir/tgbot_conf.txt
+
+
 #Script config
 if [ ! -e ~/$script_dir/script_conf.txt ];then
 	echo -e "Creating script_conf.txt..."
@@ -480,6 +600,13 @@ fi
 #Import variables from current config file
 . ~/$script_dir/${curr_conf}
 #
+
+#Start TGBot | Currently beta
+if [[ "$tgbot_autostart" = "true" && "$use_tgbot" = "true" ]]; then
+	proxy_set
+	tgbot_start
+	proxy_unset
+fi
 
 if [ -n "$1" ];then
 	while [ -n "$1" ]
@@ -516,6 +643,7 @@ while :; do
 		6 ) mega_setup;;
 		7 ) show_config_settings;;
 		8 ) show_script_settings;;
+		9 ) tgbot_menu;;
 		Q ) exit 0;;
 	esac
 done
