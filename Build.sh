@@ -403,10 +403,10 @@ function init() {
 }
 
 function sync() {
-	cd ~/$rom_dir
 	echo -e "\n${BLUE}(i)Syncing $rom_name repo...${NC}"
 	tg_msg="*(i)Syncing $rom_name repo..."
 	send_tg_notification
+	cd ~/$rom_dir
 	if [ "$FORCE_SYNC" = 1 ]; then
 		echo "Force sync!"
 		repo sync -f -c --force-sync --no-clone-bundle --no-tags
@@ -463,7 +463,6 @@ function build_rom() {
 }
 
 function build() {
-	cd ~/$rom_dir
 
 	#Enable CCache
 	if [ "$use_ccache" = "1" ]; then
@@ -482,6 +481,7 @@ function build() {
 	export "${rom_name^^}"_BUILD_TYPE="${official^^}"
 	tg_msg="*Build started at* \`$DATE\`"
 	send_tg_notification
+	cd ~/$rom_dir
 	if [ "$uselogs" = "true" ]; then
 		use_logs
 	else
