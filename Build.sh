@@ -9,6 +9,19 @@ script_file="Build.sh"
 script_ver="R0.7"
 #
 
+#TGBot variables
+tgbot_path="/home/$USER/BuildROM/TGBot"
+tg_user_id="000"
+#
+
+#Start TGBot | Currently beta
+TG_enb="0"
+if [ "$TG_enb" = "1" ]; then
+	cd $tgbot_path
+	source $tgbot_path/bashbot.sh source
+	bash $tgbot_path/bashbot.sh start
+fi
+
 # Add colors variables
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -95,6 +108,13 @@ function setup() {
 	rm -rf ~/scripts
 }
 
+function send_tg_notification() {
+	if [ "$TG_enb" = "1" ]; then
+		cd $tgbot_path
+		send_text ${tg_user_id} "markdown_parse_mode${tg_msg}" 
+	fi
+}
+
 function show_script_settings() {
 	while :; do
 		echo
@@ -138,6 +158,20 @@ function edit_script_settings() {
 	fi
 }
 
+function create_conf() {
+	touch ~/$script_dir/configs/conf$N.txt
+	echo -e "Created"
+	show_config_settings
+}
+
+function del_conf() {
+	let "G = $N - 1"
+	rm ~/$script_dir/configs/conf$G.txt
+	echo -e "Removed"
+	echo "curr_conf=\"configs/conf1.txt\"" > ~/$script_dir/script_conf.txt
+	show_config_settings
+}
+
 function show_config_settings() {
 while :; do
 
@@ -158,7 +192,7 @@ while :; do
 		let "N = $N + 1"
 	done
 
-	#Restore current configs
+	#Read current configs
 	. ~/$script_dir/${curr_conf}
 
 	echo -e "${BLUE}Current config settings: ${NC}"
@@ -173,17 +207,19 @@ while :; do
 	echo -e "${GREEN}Use ccache - ${NC}$use_ccacheP"
 	echo
 	echo -e "${BLUE}Commands avaible: ${NC}"
-	echo -e "${CYAN}Q - for go back | S - for setting current config | [1/~] For change config file" #TODO: Simplify this text
+	echo -e "${CYAN}Q - for go back | S - for setting current config | C - create new config | R - Remove current config | [1/~] For change config file" #TODO: Simplify this text
 	echo -ne "${BLUE}Your command: ${NC}"
 	read curr_cmd
-	
+
 	case "$curr_cmd" in
 		S | s ) edit_config_settings ;;
+		C | c ) create_conf ;;
+		R | r ) del_conf ;;
 		Q | q ) break ;;
 	esac
 
 	if [[ $curr_cmd =~ $re && $curr_cmd -gt 0 && $curr_cmd -le $N ]] ; then
-		echo "curr_conf=\"configs/conf$curr_cmd.txt\"" >> ~/$script_dir/script_conf.txt
+		echo "curr_conf=\"configs/conf$curr_cmd.txt\"" > ~/$script_dir/script_conf.txt
 		. ~/$script_dir/script_conf.txt
 	fi
 done
@@ -329,6 +365,8 @@ function build() {
 	echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
 	export SELINUX_IGNORE_NEVERALLOWS=true
 	export "${rom_name^^}"_BUILD_TYPE="${official^^}"
+	tg_msg="*Build started at* \`$DATE\`"
+	send_tg_notification
 	if [ "$uselogs" = "true" ]; then
 		use_logs
 	else
@@ -353,11 +391,13 @@ function build() {
 		echo -e "#######################################################################"
 		echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		echo -e "#######################################################################${NC}"
+		tg_msg="*(i)ROM compilation completed successfully* | Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 	else
 		echo -e "\n${RED}(!)ROM compilation failed"
 		echo -e "#######################################################################"
 		echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		echo -e "#######################################################################${NC}"
+			tg_msg="*(!)ROM compilation failed* | Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		if [ "$uselogs" = "true" ]; then
 			echo -ne "\nDo you want to upload logs to paste.ubuntu.com? [Y/n]:"
 			read curr_cmd
@@ -366,6 +406,7 @@ function build() {
 			fi
 		fi
 	fi
+	send_tg_notification
 	cd ~/$script_dir
 }
 
