@@ -431,7 +431,7 @@ function clean() {
 	#Clear CCache if enabled
 	if [ "$use_ccache" = "1" ]; then
 		echo "Cleaning ccache.."
-		export CCACHE_DIR=/home/$username/.ccache
+		export CCACHE_DIR=/home/$USER/.ccache
 		ccache -C
 		wait
 		echo "CCACHE Cleared"
@@ -468,7 +468,7 @@ function build() {
 	if [ "$use_ccache" = "1" ]; then
 		echo "Setupping ccache..."
 		export USE_CCACHE=1
-		export CCACHE_DIR=/home/$username/.ccache
+		export CCACHE_DIR=/home/$USER/.ccache
 		ccache -M 35G
 	fi
 	#
