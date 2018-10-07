@@ -405,6 +405,8 @@ function init() {
 function sync() {
 	cd ~/$rom_dir
 	echo -e "\n${BLUE}(i)Syncing $rom_name repo...${NC}"
+	tg_msg="*(i)Syncing $rom_name repo..."
+	send_tg_notification
 	if [ "$FORCE_SYNC" = 1 ]; then
 		echo "Force sync!"
 		repo sync -f -c --force-sync --no-clone-bundle --no-tags
@@ -412,6 +414,8 @@ function sync() {
 		echo "Normal sync"
 		repo sync -f -c --no-clone-bundle --no-tags
 	fi
+	tg_msg="*(i)Syncing $rom_name repo completed!"
+	send_tg_notification
 	cd ~/$script_dir
 }
 
