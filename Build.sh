@@ -552,17 +552,17 @@ function sf_setup() {
 
 function mega_upload() {
 	echo -e ${cya}"Uploading to mega.nz"
+	cd ~/$rom_dir
 	mega-login "$megaemail" "$megapass"
 	mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
 	mega-logout
-	wait
 	echo -e ${grn}"Uploaded file successfully"
 }
 
 function sf_upload() {
 	echo -e ${cya}"Uploading to SourceForge"
+	cd ~/$rom_dir
 	sshpass -p "$sfpass" scp out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip "$sfuser"@frs.sourceforge.net:/home/frs/project/"$sfproject"/"$device_codename"
-	wait
 	echo -e ${grn}"Uploaded file successfully"
 }
 
