@@ -627,7 +627,6 @@ fi
 #Autostart TGBot | Currently beta
 if [[ "$tgbot_autostart" = "true" ]]; then
 	tgbot_start
-	use_tgbot = "true"
 fi
 
 if [ -n "$1" ];then
