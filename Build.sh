@@ -542,6 +542,7 @@ function sf_setup() {
 }
 
 function mega_upload() {
+	DATE=`date +%Y%m%d`
 	echo -e ${cya}"Uploading to mega.nz"
 	tg_msg="*(i)Starting uploading to mega.nz*"
 	send_tg_notification
@@ -559,6 +560,7 @@ function mega_upload() {
 }
 
 function sf_upload() {
+	DATE=`date +%Y%m%d`
 	echo -e ${cya}"Uploading to SourceForge"
 	tg_msg="*(i)Starting uploading to SourceForge*"
 	send_tg_notification
