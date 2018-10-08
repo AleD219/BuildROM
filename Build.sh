@@ -654,6 +654,9 @@ if [ -n "$1" ];then
 		esac
 		shift
 	done
+	if [ "$use_tgbot" = "true" ]; then
+		tgbot_kill
+	fi
 	exit 0
 fi
 
@@ -670,6 +673,10 @@ while :; do
 		8 ) show_config_settings;;
 		9 ) show_script_settings;;
 		10 ) tgbot_menu;;
-		Q ) exit 0;;
+		Q ) 
+		if [ "$use_tgbot" = "true" ]; then
+			tgbot_kill
+		fi
+		exit 0;;
 	esac
 done
