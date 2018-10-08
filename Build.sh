@@ -548,9 +548,13 @@ function mega_upload() {
 	cd ~/$rom_dir
 	mega-login "$megaemail" "$megapass"
 	mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
+	megaout=$(mega-export -a /"$device_codename"_builds/"$rom_name"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip)
 	mega-logout
-	echo -e ${grn}"Uploaded file successfully"
-	tg_msg="*(i)Uploaded file to mega.nz successfully*"
+	megalink=$(echo $megaout | grep -Eo '(http|https)://[^"]+')
+	echo -e ${grn}"Uploaded file successfully! link : $megalink "
+	tg_msg="*(i)Uploaded file to mega.nz successfully!* link : $megalink"
+	send_tg_notification
+	tg_msg="*New Build Of $rom_name is up!* it can be downloaded [here]($megalink)"	
 	send_tg_notification
 }
 
