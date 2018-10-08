@@ -625,10 +625,10 @@ fi
 . ~/$script_dir/${curr_conf}
 #
 
-#Start TGBot | Currently beta
-if [[ "$tgbot_autostart" = "true" && "$use_tgbot" = "true" ]]; then
+#Autostart TGBot | Currently beta
+if [[ "$tgbot_autostart" = "true" ]]; then
 	proxy_set
-	tgbot_start
+	tgbot_start && use_tgbot = "true"
 	proxy_unset
 fi
 
