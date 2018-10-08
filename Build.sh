@@ -618,9 +618,8 @@ fi
 
 #Autostart TGBot | Currently beta
 if [[ "$tgbot_autostart" = "true" ]]; then
-	proxy_set
-	tgbot_start && use_tgbot = "true"
-	proxy_unset
+	tgbot_start
+	use_tgbot = "true"
 fi
 
 if [ -n "$1" ];then
