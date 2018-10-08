@@ -429,15 +429,6 @@ function clean() {
 	make clobber
 	#
 
-	#Clear CCache if enabled
-	if [ "$use_ccache" = "1" ]; then
-		echo "Cleaning ccache.."
-		export CCACHE_DIR=/home/$USER/.ccache
-		ccache -C
-		wait
-		echo "CCACHE Cleared"
-	fi
-
 	cd ~/$script_dir
 }
 
