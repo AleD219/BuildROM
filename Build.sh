@@ -566,8 +566,13 @@ function sf_upload() {
 	send_tg_notification
 	cd ~/$rom_dir
 	sshpass -p "$sfpass" scp out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip "$sfuser"@frs.sourceforge.net:/home/frs/project/"$sfproject"/"$device_codename"
+	zip_path=$(find out/target/product/"$device_codename" -name "$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip)
+	zip_name=$( basename "$zip_path" )
+	sflink="https://sourceforge.net/projects/$sfproject/files/$device_codename/$zip_name/download"
 	echo -e ${grn}"Uploaded file successfully"
-	tg_msg="*(i)Uploaded file to SourceForge successfully*"
+	tg_msg="*(i)Uploaded file to SourceForge successfully!* link : "$sflink" "
+	send_tg_notification
+	tg_msg="*New Build Of $rom_name is up!* it can be downloaded [here]($sflink)"
 	send_tg_notification
 }
 
