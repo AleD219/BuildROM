@@ -478,7 +478,6 @@ function build() {
 	DATE=`date`
 	echo -e "\n${CYAN}#######################################################################${NC}"
 	echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
-	export SELINUX_IGNORE_NEVERALLOWS=true
 	export "${rom_name^^}"_BUILD_TYPE="${official^^}"
 	tg_msg="*Build started at* \`$DATE\`"
 	send_tg_notification
@@ -662,6 +661,8 @@ if [ -n "$1" ];then
 	do
 		case "$1" in
 			-fwb ) delfwb ;;
+			-ana ) export SELINUX_IGNORE_NEVERALLOWS=true ;;
+			-amd ) export ALLOW_MISSING_DEPENDENCIES=true ;;
 			--help | -h) help ;;
 			--setup) setup ;;
 			--init) init ;;
