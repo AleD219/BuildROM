@@ -477,9 +477,9 @@ function build() {
 	BUILD_START=$(date +"%s")
 	DATE=`date`
 	echo -e "\n${CYAN}#######################################################################${NC}"
-	echo -e "${BLUE}(i)Build started at $DATE${NC}\n"
+	echo -e "${BLUE}(i)"$rom_name" build started at $DATE${NC}\n"
 	export "${rom_name^^}"_BUILD_TYPE="${official^^}"
-	tg_msg="*Build started at* \`$DATE\`"
+	tg_msg="*"$rom_name" build started at* \`$DATE\`"
 	send_tg_notification
 	cd ~/$rom_dir
 	if [ "$uselogs" = "true" ]; then
@@ -506,13 +506,13 @@ function build() {
 		echo -e "#######################################################################"
 		echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		echo -e "#######################################################################${NC}"
-		tg_msg="*(i)ROM compilation completed successfully* | Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+		tg_msg="*(i)ROM ($rom_name) compilation completed successfully* | Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 	else
 		echo -e "\n${RED}(!)ROM compilation failed"
 		echo -e "#######################################################################"
 		echo -e "(i)Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		echo -e "#######################################################################${NC}"
-		tg_msg="*(!)ROM compilation failed* | Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
+		tg_msg="*(!)ROM ($rom_name) compilation failed* | Total time elapsed: $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
 		if [ "$uselogs" = "true" ]; then
 			echo -ne "\nDo you want to upload logs to paste.ubuntu.com? [Y/n]:"
 			read curr_cmd
