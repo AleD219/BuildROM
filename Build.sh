@@ -542,6 +542,7 @@ function sf_setup() {
 }
 
 function mega_upload() {
+	cd ~/$rom_dir
 	DATE=`date +%Y%m%d`
 	echo -e ${cya}"Uploading to mega.nz"
 	tg_msg="*(i)Starting uploading to mega.nz*"
@@ -560,6 +561,7 @@ function mega_upload() {
 }
 
 function sf_upload() {
+	cd ~/$rom_dir
 	DATE=`date +%Y%m%d`
 	echo -e ${cya}"Uploading to SourceForge"
 	tg_msg="*(i)Starting uploading to SourceForge*"
