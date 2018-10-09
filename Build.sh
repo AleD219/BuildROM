@@ -225,7 +225,7 @@ function setup() {
 	echo "Step 1 - Installing git"
 	sudo apt install git -y
 	echo "Step 2 - Installing some usefull utilities needed by script"
-	sudo apt install pastebinit -y
+	sudo apt install tmux -y
 	echo "Step 3 - Downloading setup script"
 	git clone https://github.com/akhilnarang/scripts ~/scripts
 	echo "Step 4 - Execute setup script"
@@ -584,7 +584,7 @@ function sf_upload() {
 	zip_name=$( basename "$zip_path" )
 	sflink="https://sourceforge.net/projects/$sfproject/files/$device_codename/$zip_name/download"
 	echo -e ${grn}"Uploaded file successfully"
-	tg_msg="*(i)Uploaded file to SourceForge successfully!* link : "$sflink" "
+	tg_msg="*(i)Uploaded file to SourceForge successfully!* link : $sflink "
 	send_tg_notification
 	tg_msg="*New Build Of $rom_name is up!* it can be downloaded [here]($sflink)"
 	send_tg_notification
