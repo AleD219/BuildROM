@@ -592,11 +592,6 @@ function sf_upload() {
 	send_tg_file
 }
 
-function delfwb() {
-	rm -rf ~/$rom_dir/frameworks/base
-	echo "FWB Deleted!"
-}
-
 function use_logs() {
 	mkdir -p _logs
 	LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
@@ -660,9 +655,9 @@ if [ -n "$1" ];then
 	while [ -n "$1" ]
 	do
 		case "$1" in
-			-fwb ) delfwb ;;
-			-ana ) export SELINUX_IGNORE_NEVERALLOWS=true ;;
-			-amd ) export ALLOW_MISSING_DEPENDENCIES=true ;;
+			-fwb ) rm -rf ~/$rom_dir/frameworks/base && echo "FWB Deleted!" ;;
+			-ana ) export SELINUX_IGNORE_NEVERALLOWS=true && echo "Ignoring SELinux Neverallows!" ;;
+			-amd ) export ALLOW_MISSING_DEPENDENCIES=true && echo "Allowing Missing Dependencies!" ;;
 			--help | -h) help ;;
 			--setup) setup ;;
 			--init) init ;;
