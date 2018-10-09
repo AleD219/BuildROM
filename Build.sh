@@ -592,6 +592,11 @@ function sf_upload() {
 	send_tg_file
 }
 
+haste() { 
+	a=$(cat)
+	curl -X POST -s -d "$a" https://hastebin.com/documents | awk -F '"' '{print "https://hastebin.com/"$4}'
+}
+
 function use_logs() {
 	mkdir -p _logs
 	LOG_FILE="_logs/$(date +"%m-%d-%Y_%H-%M-%S").log"
@@ -600,9 +605,9 @@ function use_logs() {
 }
 
 function upload_logs() {
-	echo "uploading to pastebin.."
-	echo -n "Done, pastebin link: "
-	cat $LOG_FILE | pastebinit -b https://paste.ubuntu.com
+	echo "uploading to hastebin.."
+	echo -n "Done, hastebin link: "
+	cat $LOG_FILE | haste
 }
 #
 
