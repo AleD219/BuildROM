@@ -199,6 +199,15 @@ function send_tg_notification() {
 	fi
 }
 
+function send_tg_file() {
+	if [ "$use_tgbot" = "true" ]; then
+		proxy_set
+		cd $tgbot_path
+		send_file "${tg_user_id}" "$tg_file" 
+		proxy_unset
+	fi
+}
+
 function help() {
 	echo
 	echo -e "${BLUE}BuildROM script ${CYAN}$script_ver${BLUE} | By MrYacha, Timur and AleD219"
@@ -544,6 +553,7 @@ function sf_setup() {
 function mega_upload() {
 	cd ~/$rom_dir
 	DATE=`date +%Y%m%d`
+	changelog=$(find out/target/product/"$device_codename" -maxdepth 1  -name "$rom_name"*.txt)
 	echo -e ${cya}"Uploading to mega.nz"
 	tg_msg="*(i)Starting uploading to mega.nz*"
 	send_tg_notification
@@ -558,11 +568,14 @@ function mega_upload() {
 	send_tg_notification
 	tg_msg="*New Build Of $rom_name is up!* it can be downloaded [here]($megalink)"	
 	send_tg_notification
+	tg_file="/home/$USER/$rom_dir/$changelog"
+	send_tg_file
 }
 
 function sf_upload() {
 	cd ~/$rom_dir
 	DATE=`date +%Y%m%d`
+	changelog=$(find out/target/product/"$device_codename" -maxdepth 1  -name "$rom_name"*.txt)
 	echo -e ${cya}"Uploading to SourceForge"
 	tg_msg="*(i)Starting uploading to SourceForge*"
 	send_tg_notification
@@ -576,6 +589,8 @@ function sf_upload() {
 	send_tg_notification
 	tg_msg="*New Build Of $rom_name is up!* it can be downloaded [here]($sflink)"
 	send_tg_notification
+	tg_file="/home/$USER/$rom_dir/$changelog"
+	send_tg_file
 }
 
 function delfwb() {
