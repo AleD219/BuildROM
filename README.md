@@ -1,6 +1,6 @@
 # BuildROM script
 
-Complex system for ROM maintainers
+Complex system for ROM maintainers by MrYacha, Timur & AleD219
 
 ##Features:
 * Setup local enviroment
@@ -10,11 +10,17 @@ Complex system for ROM maintainers
 * And more others features for maintainers
 
 ##Using:
-For start using BuildROM tou need download it to ~/BuildROM/Build.sh
+For start using BuildROM you need clone it to ~/BuildROM
 
-
-    mkdir -p ~/BuildROM 
+    sudo apt install git
+    git clone https://github.com/AleD219/BuildRom ~/BuildROM
     cd ~/BuildROM
-    wget https://gitlab.com/MrYacha/buildrom/blob/master/Build.sh Build.sh
+
+## Now pull tg bot api
+    git submodule update --init --recursive --remote
+
+## now start the script
     bash Build.sh
+    or
+    . Build.sh
 
