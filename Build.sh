@@ -558,17 +558,25 @@ function mega_upload() {
 	send_tg_notification
 	cd ~/$rom_dir
 	mega-login "$megaemail" "$megapass"
-	mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
-	megaout=$(mega-export -a /"$device_codename"_builds/"$rom_name"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip)
+	if [ "$TEST_BUILD" = "true" ];then
+		mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"_test/
+		tg_msg="*(i)Uploaded test build to mega.nz successfully!*"
+		send_tg_notification
+		tg_file="/home/$USER/$rom_dir/$changelog"
+		send_tg_file
+	else
+		mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
+		megaout=$(mega-export -a /"$device_codename"_builds/"$rom_name"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip)
+		megalink=$(echo $megaout | grep -Eo '(http|https)://[^"]+')
+		echo -e ${grn}"Uploaded file successfully! link : $megalink "
+		tg_msg="*(i)Uploaded file to mega.nz successfully!* link : $megalink"
+		send_tg_notification
+		tg_msg="*New Build Of $rom_name is up!* it can be downloaded [here]($megalink)"	
+		send_tg_notification
+		tg_file="/home/$USER/$rom_dir/$changelog"
+		send_tg_file
+	fi
 	mega-logout
-	megalink=$(echo $megaout | grep -Eo '(http|https)://[^"]+')
-	echo -e ${grn}"Uploaded file successfully! link : $megalink "
-	tg_msg="*(i)Uploaded file to mega.nz successfully!* link : $megalink"
-	send_tg_notification
-	tg_msg="*New Build Of $rom_name is up!* it can be downloaded [here]($megalink)"	
-	send_tg_notification
-	tg_file="/home/$USER/$rom_dir/$changelog"
-	send_tg_file
 }
 
 function sf_upload() {
@@ -660,6 +668,7 @@ if [ -n "$1" ];then
 	while [ -n "$1" ]
 	do
 		case "$1" in
+			--test | -t ) export TEST_BUILD="true" && echo "Test Build!" ;;
 			-fwb ) rm -rf ~/$rom_dir/frameworks/base && echo "FWB Deleted!" ;;
 			-ana ) export SELINUX_IGNORE_NEVERALLOWS=true && echo "Ignoring SELinux Neverallows!" ;;
 			-amd ) export ALLOW_MISSING_DEPENDENCIES=true && echo "Allowing Missing Dependencies!" ;;
@@ -674,9 +683,9 @@ if [ -n "$1" ];then
 			shift;;
 			--clean | -c) clean ;;
 			--installclean | -ic) installclean ;;
+			--build | -b ) build ;;
 			--mega | -m ) mega_upload ;;
 			--sourceforge | -sf ) sf_upload ;;
-			--build | -b) build ;;
 		esac
 		shift
 	done
