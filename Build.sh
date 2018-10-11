@@ -559,13 +559,13 @@ function mega_upload() {
 	cd ~/$rom_dir
 	mega-login "$megaemail" "$megapass"
 	if [ "$TEST_BUILD" = "true" ];then
-		mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"_test/
+		mega-put -c out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"_test/
 		tg_msg="*(i)Uploaded test build to mega.nz successfully!*"
 		send_tg_notification
 		tg_file="/home/$USER/$rom_dir/$changelog"
 		send_tg_file
 	else
-		mega-put out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
+		mega-put -c out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
 		megaout=$(mega-export -a /"$device_codename"_builds/"$rom_name"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip)
 		megalink=$(echo $megaout | grep -Eo '(http|https)://[^"]+')
 		echo -e ${grn}"Uploaded file successfully! link : $megalink "
