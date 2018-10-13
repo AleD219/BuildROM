@@ -226,6 +226,7 @@ function setup() {
 	sudo apt install git -y
 	echo "Step 2 - Installing some usefull utilities needed by script"
 	sudo apt install tmux -y
+	sudo apt install libc-ares2 libcrypto++6 libmediainfo0v5 libpcrecpp0v5 libzen0v5 apt-transport-https libcurl3-gnutls libglib2.0-0 libmms0 libtinyxml2-4 -y
 	echo "Step 3 - Downloading setup script"
 	git clone https://github.com/akhilnarang/scripts ~/scripts
 	echo "Step 4 - Execute setup script"
