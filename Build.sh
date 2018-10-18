@@ -454,9 +454,11 @@ function installclean() {
 
 function build_rom() {
 	. build/envsetup.sh
-	lunch "$rom_name"_"$device_codename"-$buildtype #TODO: auto detect current build system, many roms based on lineage, so its not working for it
-	if [ "$rom_name" = "aosip" ]; then #Crutch for now
+	lunch "$rom_name"_"$device_codename"-$buildtype
+	if [ "$rom_name" = "aosip" ]; then
 		time mka kronic
+	elif [ "$rom_name" = "citrus" ]; then
+		mka lemonade -j$(nproc --all)
 	else
 		brunch $device_codename
 	fi
