@@ -571,7 +571,7 @@ function mega_upload() {
 		mega-put -c out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip /"$device_codename"_builds/"$rom_name"/
 		megaout=$(mega-export -a /"$device_codename"_builds/"$rom_name"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip)
 		megalink=$(echo $megaout | grep -Eo '(http|https)://[^"]+')
-		echo -e ${grn}"Uploaded file successfully! link : $megalink "
+		echo -e ${grn}"Uploaded file on mega successfully! link : $megalink "
 		tg_msg="*(i)Uploaded file to mega.nz successfully!* link : $megalink"
 		send_tg_notification
 		tg_msg="*New Build Of $rom_name is up!* it can be downloaded [here]($megalink)"	
@@ -594,8 +594,8 @@ function sf_upload() {
 	zip_path=$(find out/target/product/"$device_codename" -name "$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip)
 	zip_name=$( basename "$zip_path" )
 	sflink="https://sourceforge.net/projects/$sfproject/files/$device_codename/$zip_name/download"
-	echo -e ${grn}"Uploaded file successfully"
-	tg_msg="*(i)Uploaded file to SourceForge successfully!* link : $sflink "
+	echo -e ${grn}"Uploaded file on SourceForge successfully! link : $sflink "
+	tg_msg="*(i)Uploaded file to SourceForge successfully!* link : $sflink"
 	send_tg_notification
 	tg_msg="*New Build Of $rom_name is up!* it can be downloaded [here]($sflink)"
 	send_tg_notification
