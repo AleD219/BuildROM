@@ -590,7 +590,7 @@ function sf_upload() {
 	tg_msg="*(i)Starting uploading to SourceForge*"
 	send_tg_notification
 	cd ~/$rom_dir
-	sshpass -p "$sfpass" scp out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip "$sfuser"@frs.sourceforge.net:/home/frs/project/"$sfproject"/"$device_codename"
+	sshpass -p "$sfpass" scp out/target/product/"$device_codename"/"$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip "$sfuser"@web.sourceforge.net:/home/frs/project/"$sfproject"/"$device_codename"
 	zip_path=$(find out/target/product/"$device_codename" -name "$rom_name"_"$device_codename"-"$version"-"$DATE"*.zip)
 	zip_name=$( basename "$zip_path" )
 	sflink="https://sourceforge.net/projects/$sfproject/files/$device_codename/$zip_name/download"
